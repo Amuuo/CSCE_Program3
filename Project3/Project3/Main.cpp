@@ -15,7 +15,8 @@ enum spellAttr { spNAME, spTYPE, spCLASS, spLVL };
 struct Spell
 {
       string name;
-      string sClass;
+      //string sClass;
+      unordered_map<string, string> sClass;
       string type;
       int lvl;
 
@@ -23,10 +24,16 @@ struct Spell
 
 void printSpell(Spell* tmpSpell)
 {
-      cout << "\nName: " << tmpSpell->name << endl
-            << "Class: " << tmpSpell->sClass << endl
-            << "Type: " << tmpSpell->type << endl
-            << "Level: " << tmpSpell->lvl << endl;
+      cout << "\nName: " << tmpSpell->name   << endl;
+      cout << "Class: " << endl;
+      for (auto iter : tmpSpell->sClass)
+      {
+            static int i = 1;
+            cout << i << ": " << iter.second << endl;
+            i++;
+      }
+      cout << "Type: "   << tmpSpell->type   << endl;
+      cout << "Level: "  << tmpSpell->lvl    << endl;
       return;
 }
 
@@ -50,6 +57,7 @@ int main()
       }
       //pass by column headers
       inFile >> tmp >> tmp2 >> tmp3;
+      vector<pair<string, string>>* tmpClass = new vector<pair<string,string>>;
       while (!inFile.eof())
       {
             Spell sp;
@@ -57,7 +65,8 @@ int main()
             inFile >> tmp >> tmp2 >> tmpInt;
 
             sp.name = tmp;
-            sp.sClass = tmp2;
+            pair<string, string> tmpPair = make_pair(tmp, tmp2);
+            tmpClass->push_back(tmpPair);
             sp.lvl = tmpInt;
             sp.type = "";
 
@@ -151,6 +160,31 @@ int main()
             cout << iter.first << endl;
       }
       char userResponse;
+      cout << "\n*******SP_CLASS_LOOKUP*********\n" << endl;
+
+      for (auto iter : spClassLookup)
+      {           
+            cout << iter.first << endl;
+      }
+      cout << "\n*******SP_NAME_LOOKUP*********\n" << endl;
+
+      for (auto iter : spNameLookup)
+      {
+       
+            printSpell(iter.second);
+      }
+      cout << "\n*******SP_TYPE_LOOKUP*********\n" << endl;
+
+      for (auto iter : spTypeLookup)
+      {
+            cout << iter.first << endl;
+      }
+      cout << "\n*******SP_LEVEL_LOOKUP*********\n" << endl;
+
+      for (auto iter : spLvlLookup)
+      {
+            cout << iter.first << endl;
+      }
       do
       {
             string choice;
@@ -185,19 +219,55 @@ int main()
             case 2:
             {
                   cout << "\n\nEnter Spell Class: "; cin >> choice;
-                  auto iter = spClassLookup.equal_range(choice);
+                  auto iter2 = spClassLookup.find(choice);
+                  if (spClassLookup.count(choice) > 1)
+                  {
+                        auto iter = spClassLookup.equal_range(choice);
+                        for (; iter2 != iter.second; ++iter2)
+                        {
+                              printSpell(iter2->second);
+                        }
+                  }
+                  else
+                  {
+                        printSpell(iter2->second);
+                  }
                   break;
             }
             case 3:
             {
                   cout << "\n\nEnter Spell Type: "; cin >> choice;
-                  auto iter = spTypeLookup.equal_range(choice);
+                  auto iter2 = spTypeLookup.find(choice);
+                  if (spTypeLookup.count(choice) > 1)
+                  {
+                        auto iter = spTypeLookup.equal_range(choice);
+                        for (; iter2 != iter.second; ++iter2)
+                        {
+                              printSpell(iter2->second);
+                        }
+                  }
+                  else
+                  {
+                        printSpell(iter2->second);
+                  }
                   break;
             }
             case 4:
             {
                   cout << "\n\nEnter the Spell Level: "; cin >> intChoice;
-                  auto iter = spLvlLookup.equal_range(intChoice);
+                  auto iter2 = spLvlLookup.find(intChoice);
+                  if (spClassLookup.count(choice) > 1)
+                  {
+                        auto iter = spLvlLookup.equal_range(intChoice);
+                        for (; iter2 != iter.second; ++iter2)
+                        {
+                              printSpell(iter2->second);
+                        }
+                  }
+                  else
+                  {
+                        printSpell(iter2->second);
+                  }
                   break;
             }
             }
