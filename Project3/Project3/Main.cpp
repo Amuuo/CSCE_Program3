@@ -59,26 +59,32 @@ int main()
             sp.name = tmp;
             sp.sClass = tmp2;
             sp.lvl = tmpInt;
+            sp.type = "";
 
             spellList.push_back(sp);
       }
       inFile.close();
       //initialize lookup tables for each spell attribute
       vector<pair<string, Spell*>> names;
-      set<pair<string, Spell*>> classes;
-      set<pair<int, Spell*>> levels;
+      for (auto iter : spellList ) { cout << iter.name << endl; }
+      vector<pair<string, Spell*>> classes;
+      vector<pair<int, Spell*>> levels;
       for (auto iter : spellList)
       {
-            pair<string, Spell*> tmpPair = make_pair(iter.name, &iter);
+            static int i = 0;
+            pair<string, Spell*> tmpPair = make_pair(iter.name, &spellList.at(i));
             names.push_back(tmpPair);
 
-            pair<string, Spell*> tmpPair2 = make_pair(iter.sClass, &iter);
-            classes.insert(tmpPair2);
+            pair<string, Spell*> tmpPair2 = make_pair(iter.sClass, &spellList.at(i));
+            classes.push_back(tmpPair2);
 
-            pair<int, Spell*> tmpPair3 = make_pair(iter.lvl, &iter);
-            levels.insert(tmpPair3);
+            pair<int, Spell*> tmpPair3 = make_pair(iter.lvl, &spellList.at(i));
+            levels.push_back(tmpPair3);
+            i++;
       }
       sort(names.begin(), names.end());
+      sort(classes.begin(), classes.end());
+      sort(levels.begin(), levels.end());
       for (auto iter : names)   { spNameLookup.insert(iter);  }
       for (auto iter : classes) { spClassLookup.insert(iter); }
       for (auto iter : levels)  { spLvlLookup.insert(iter);   }
@@ -98,23 +104,45 @@ int main()
       //import data2.txt and 
       while (!inFile.eof())
       {
+            auto itBegin = spellList.begin();
+            auto itEnd = spellList.end();
             inFile >> tmp >> tmp2;
-            for (auto iter : spellList)
+            //cout << tmp << " " << tmp2;
+            int i = 0;
+            while(itBegin != itEnd)
             {
-                  if (iter.name == tmp)
+                  if (itBegin->name == tmp)
                   {
-                        iter.type = tmp2;
+                        itBegin->type += tmp2;
+                        cout << "\nSpell Name: " << itBegin->name << "\nSpell Type: " << itBegin->type << endl;
+                        cout << "\nType from spellList: " << spellList.at(i).type;
                   }
+                  ++itBegin;
+                  i++;
             }
       }
-      set<pair<string, Spell*>> types;
+      vector<pair<string, Spell*>> types;
       for (auto iter : spellList)
       {
-            pair<string, Spell*> tmpPair = make_pair(iter.type, &iter);
-            types.insert(tmpPair);
+            static int i = 0;
+            pair<string, Spell*> tmpPair = make_pair(iter.type, &spellList.at(i));
+            types.push_back(tmpPair);
       }
+      
+      for(auto iter : spellList)
+      {
+            static int i = 0;
+            cout << "Name: " << iter.name << endl;
+            cout << "Class: " << iter.sClass << endl;
+            cout << "Type: " << iter.type << endl;
+            cout << "Level: " << iter.lvl << endl;
+            cout << "Memory Address: " << &spellList.at(i) << endl << endl;
+            ++i;
+      }
+      sort(types.begin(), types.end());
       for (auto iter : types)
       {
+            cout << iter.second << endl;
             spTypeLookup.insert(iter);
       }
       //sort(begin(spTypeLookup), end(spTypeLookup));
