@@ -26,9 +26,9 @@ void printSpell(Spell* tmpSpell)
 {
       cout << "\nName: " << tmpSpell->name   << endl;
       cout << "Class: " << endl;
+      int i = 0;
       for (auto iter : tmpSpell->sClass)
       {
-            static int i = 1;
             cout << i << ": " << iter.second << endl;
             i++;
       }
@@ -73,10 +73,9 @@ int main()
             spellList.push_back(sp);
       }
       inFile.close();
-      //initialize lookup tables for each spell attribute
+      //insert elements into temporary vectors to sort
       vector<pair<string, Spell*>> names;
-      for (auto iter : spellList ) { cout << iter.name << endl; }
-      vector<pair<string, Spell*>> classes;
+      vector<pair<unordered_map<string,string>, Spell*>> classes;
       vector<pair<int, Spell*>> levels;
       for (auto iter : spellList)
       {
@@ -84,7 +83,7 @@ int main()
             pair<string, Spell*> tmpPair = make_pair(iter.name, &spellList.at(i));
             names.push_back(tmpPair);
 
-            pair<string, Spell*> tmpPair2 = make_pair(iter.sClass, &spellList.at(i));
+            pair<unordered_map<string,string>, Spell*> tmpPair2 = make_pair(iter.sClass, &spellList.at(i));
             classes.push_back(tmpPair2);
 
             pair<int, Spell*> tmpPair3 = make_pair(iter.lvl, &spellList.at(i));
