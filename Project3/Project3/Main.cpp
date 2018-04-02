@@ -28,10 +28,10 @@ struct Player
 
 struct allInfo
 {
-      string spellName;
-      string spellClass;
-      string spellType;
-      string spellLvl;
+      vector<string> spellName;
+      vector<string> spellClass;
+      vector<string> spellType;
+      vector<string> spellLvl;
       string playerName;
       string playerClass;
       string PlayerMaxLvl;
@@ -46,14 +46,15 @@ typedef unordered_multimap<string, allInfo*>                        Index_allInf
 typedef vector<Player>                                              HashTable_Player;
 typedef vector<Spell>                                               HashTable_Spell;
 typedef vector<allInfo>                                             HashTable_allInfo;
+typedef vector<vector<string>>                                      tmpVecTable;
 typedef vector<string>                                              tmpTable;
 
-void joinTable(spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, allInfoLookupDir& tmpAll)
+void initializeJoinTable(spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, allInfoLookupDir& tmpAll, HashTable_allInfo& tmpA, HashTable_Player& tmpP, HashTable_Spell& tmpS)
 {
-      tmpTable* spellName    = new tmpTable;
-      tmpTable* spellClass   = new tmpTable;
-      tmpTable* spellType    = new tmpTable;
-      tmpTable* spellLvl     = new tmpTable;
+      /*tmpVecTable* spellName    = new tmpVecTable;
+      tmpVecTable* spellClass   = new tmpVecTable;
+      tmpVecTable* spellType    = new tmpVecTable;
+      tmpVecTable* spellLvl     = new tmpVecTable;
       tmpTable* playerName   = new tmpTable;
       tmpTable* playerClass  = new tmpTable;
       tmpTable* playerMaxLvl = new tmpTable;
@@ -71,18 +72,71 @@ void joinTable(spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, allInfoLook
       sort(playerName->begin(), playerName->end());
       sort(playerClass->begin(), playerClass->end());
       sort(playerMaxLvl->begin(), playerMaxLvl->end());
-      for (auto iter : *spellName) {  }
+      for (auto iter : *spellName) { allInfo tmp;  tmpA->push_back(tmp); }
+      for (auto iter : *spellName) 
+      { 
+            static int i = 0; 
+            tmpA->at(i).spellName = iter; 
+            tmpAll["plNameIndex"] 
+      }*/
+      int i = 0;
+      for (auto iter : tmpP)
+      {
+            int j = 0;
+            for (auto iter2 : tmpS)
+            {
+                  if (iter.plClass == iter2.sClass && stoi(iter.plMaxLvl) > stoi(iter2.lvl))
+                  {
+                        if (j == 0)
+                        {
+                              tmpA.at(i).playerName = iter.plName;
+                              tmpA.at(i).playerClass = iter.plClass;
+                              tmpA.at(i).PlayerMaxLvl = iter.plMaxLvl;
+                              tmpA.at(i).spellName.push_back(iter2.name);
+                              tmpA.at(i).spellClass.push_back(iter2.sClass);
+                              tmpA.at(i).spellType.push_back(iter2.type);
+                              tmpA.at(i).spellLvl.push_back(iter2.lvl);
+                              ++j;
+                        }
+                        else
+                        {
+                              tmpA.at(i).spellName.push_back(iter2.name);
+                              tmpA.at(i).spellClass.push_back(iter2.sClass);
+                              tmpA.at(i).spellType.push_back(iter2.type);
+                              tmpA.at(i).spellLvl.push_back(iter2.lvl);
+                        }
+                  }
+            }
+            ++i;
+      }
+}
+void printAllHeader()
+{
+      cout << endl << "     " << setw(20) << left << "Name" << setw(15) << "Class" << setw(15) << "Lvl" << setw(15) << "Spell"
+            << setw(15) << "Spell Type" << setw(15) << "Spell Level "<< setw(15) << "Spell Class\n";
 }
 
+void printAllInfo(allInfo& info)
+{
+      int i = 0;
+      cout << endl << "     " << setw(20) << left << info.playerName << setw(15)
+            << info.playerClass << setw(15) << info.PlayerMaxLvl << setw(15)
+            << info.spellName.at(i) << setw(10) << info.spellType.at(i) << setw(10) << info.spellClass.at(i) << endl;
+      for (int i = 1; i < info.spellName.size(); ++i)
+      {
+            cout << setw(70) << info.spellName.at(i) << setw(15) << info.spellType.at(i) 
+                  << setw(15) << info.spellLvl.at(i) << setw(15) << info.spellClass.at(i) << endl;
+      }
+}
 void printSpellHeader()
 {
-      cout << endl << "   " << setw(20) << left <<  "Spell" << setw(15) <<   "Type" 
+      cout << endl << "     " << setw(20) << left <<  "Spell" << setw(15) <<   "Type" 
                    << setw(10) << "Class" << setw(10) <<   "Level\n";
 }
 
 void printSpell(Spell* tmpSpell)
 {
-      cout << endl << "   " << setw(20) << tmpSpell->name; //   << endl;
+      cout << endl << "     " << setw(20) << tmpSpell->name; //   << endl;
       cout << setw(15) << tmpSpell->type;// << endl;
       cout << setw(10) << tmpSpell->sClass;// << endl;
       cout << setw(10) << tmpSpell->lvl;// << endl;
@@ -158,7 +212,10 @@ int main()
 
       allLookup["aSpellName"] = aSpellName;
       allLookup["aSpellType"] = aSpellType;
-      allLookup["aSpellLvl"] = aSpellLvl;
+      allLookup["aSpellLvl"]  = aSpellLvl;
+      allLookup["aClass"]     = aClass;
+      allLookup["aLvl"]       = aLvl;
+      allLookup["aName"]      = aName;
 
 
       inFile.open("data2.txt");
