@@ -25,10 +25,10 @@ struct Player
       string plMaxLvl;
 };
 
-typedef unordered_map<string, unordered_multimap<string, Spell*>> spellLookupDir;
-typedef unordered_map<string, unordered_multimap<string, Player*>> playerLookupDir;
-typedef unordered_multimap<string, Spell*> hashTable_Spell;
-typedef unordered_multimap<string, Player*> hashTable_Player;
+typedef unordered_map<string, unordered_multimap<string, Spell*>>   spellLookupDir  ;
+typedef unordered_map<string, unordered_multimap<string, Player*>>  playerLookupDir ;
+typedef unordered_multimap<string, Spell*>                          hashTable_Spell ;
+typedef unordered_multimap<string, Player*>                         hashTable_Player;
 
 void printSpell(Spell* tmpSpell)
 {
@@ -36,6 +36,14 @@ void printSpell(Spell* tmpSpell)
       cout << "Class: "  << tmpSpell->sClass << endl;
       cout << "Type: "   << tmpSpell->type   << endl;
       cout << "Level: "  << tmpSpell->lvl    << endl;
+      return;
+}
+
+void printPlayer(Player* tmpPlayer)
+{
+      cout << "\nName: "    << tmpPlayer->plName   << endl;
+      cout << "Class: "     << tmpPlayer->plClass  << endl;
+      cout << "Max_Level: " << tmpPlayer->plMaxLvl << endl;
       return;
 }
 
@@ -317,10 +325,40 @@ int main()
                               auto iter = playerLookup["plNameIndex"].equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    printSpell(iter2->second);
+                                    printPlayer(iter2->second);
                               }
                         }
-                        else { printSpell(iter2->second); }
+                        else { printPlayer(iter2->second); }
+                        break;
+                  }
+                  case 6:
+                  {
+                        cout << "\n\nEnter Class: "; cin >> choice;
+                        auto iter2 = playerLookup["plClassIndex"].find(choice);
+                        if (playerLookup["plClassIndex"].count(choice) > 1)
+                        {
+                              auto iter = playerLookup["plClassIndex"].equal_range(choice);
+                              for (; iter2 != iter.second; ++iter2)
+                              {
+                                    printPlayer(iter2->second);
+                              }
+                        }
+                        else { printPlayer(iter2->second); }
+                        break;
+                  }
+                  case 7:
+                  {
+                        cout << "\n\nEnter the Player's Max Level: "; cin >> choice;
+                        auto iter2 = playerLookup["plMaxLvlIndex"].find(choice);
+                        if (playerLookup["plMaxLvlIndex"].count(choice) > 1)
+                        {
+                              auto iter = playerLookup["plMaxLvlIndex"].equal_range(choice);
+                              for (; iter2 != iter.second; ++iter2)
+                              {
+                                    printPlayer(iter2->second);
+                              }
+                        }
+                        else { printPlayer(iter2->second); }
                         break;
                   }
             }
