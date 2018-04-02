@@ -26,53 +26,10 @@ struct Player
       string plMaxLvl;
 };
 
-struct allInfo
-{
-      string spellName;
-      string spellClass;
-      string spellType;
-      string spellLvl;
-      string playerName;
-      string playerClass;
-      string PlayerMaxLvl;
-};
-
 typedef unordered_map<string, unordered_multimap<string, Spell*>>   spellLookupDir  ;
 typedef unordered_map<string, unordered_multimap<string, Player*>>  playerLookupDir ;
-typedef unordered_map<string, unordered_multimap<string, allInfo*>> allInfoLookupDir;
-typedef unordered_multimap<string, Spell*>                          Index_Spell ;
-typedef unordered_multimap<string, Player*>                         Index_Player;
-typedef unordered_multimap<string, allInfo*>                        Index_allInfo;
-typedef vector<Player>                                              HashTable_Player;
-typedef vector<Spell>                                               HashTable_Spell;
-typedef vector<allInfo>                                             HashTable_allInfo;
-typedef vector<string>                                              tmpTable;
-
-void joinTable(spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, allInfoLookupDir& tmpAll)
-{
-      tmpTable* spellName    = new tmpTable;
-      tmpTable* spellClass   = new tmpTable;
-      tmpTable* spellType    = new tmpTable;
-      tmpTable* spellLvl     = new tmpTable;
-      tmpTable* playerName   = new tmpTable;
-      tmpTable* playerClass  = new tmpTable;
-      tmpTable* playerMaxLvl = new tmpTable;
-      for (auto iter : tmpSpell["spNameIndex"])    { spellName->push_back(iter.first);    }
-      for (auto iter : tmpSpell["spClassIndex"])   { spellClass->push_back(iter.first);   }
-      for (auto iter : tmpSpell["spTypeIndex"])    { spellType->push_back(iter.first);    }
-      for (auto iter : tmpSpell["spLvlIndex"])     { spellLvl->push_back(iter.first);     }
-      for (auto iter : tmpPlayer["plNameIndex"])   { playerName->push_back(iter.first);   }
-      for (auto iter : tmpPlayer["plClassIndex"])  { playerClass->push_back(iter.first);  }
-      for (auto iter : tmpPlayer["plMaxLvlIndex"]) { playerMaxLvl->push_back(iter.first); }
-      sort(spellName->begin(), spellName->end());
-      sort(spellClass->begin(), spellClass->end());
-      sort(spellType->begin(), spellType->end());
-      sort(spellLvl->begin(), spellLvl->end());
-      sort(playerName->begin(), playerName->end());
-      sort(playerClass->begin(), playerClass->end());
-      sort(playerMaxLvl->begin(), playerMaxLvl->end());
-      for (auto iter : *spellName) {  }
-}
+typedef unordered_multimap<string, Spell*>                          hashTable_Spell ;
+typedef unordered_multimap<string, Player*>                         hashTable_Player;
 
 void printSpellHeader()
 {
@@ -132,33 +89,21 @@ string printSpellByLvl(unordered_multimap<int, Spell*>* tmpMap, int lvl)
 
 int main()
 {
-      spellLookupDir     spellLookup;      // holds all the attribute indexes for spell
-      playerLookupDir    playerLookup;     // holds all the attributes indexes for player
-      allInfoLookupDir   allLookup;
-      Index_Spell        spNameIndex;      // holds pairs of spell names, and pointers to spell obj
-      Index_Spell        spClassIndex;     // holds pairs of spell classes, and pointers to spell obj
-      Index_Spell        spTypeIndex;      // holds pairs of spell types, and pointers to spell obj
-      Index_Spell        spLvlIndex;       // holds pairs of spell levels, and pointers to spell obj
-      Index_Player       plNameIndex;      // holds pairs of player names, and pointers to player obj
-      Index_Player       plClassIndex;     // holds pairs of player classes, and pointers to player obj
-      Index_Player       plMaxLvlIndex;    // holds pairs of player max level, and pointers to player obj 
-      Index_allInfo      aSpellName;
-      Index_allInfo      aSpellType;
-      Index_allInfo      aSpellLvl;
-      Index_allInfo      aClass;
-      Index_allInfo      aLvl;
-      Index_allInfo      aName;
-      HashTable_Player   playerList;       // Table of all the players, who can we searched by any index
-      HashTable_Spell    spellList;        // Table of all the spells; all can be searched by spell index
-      HashTable_allInfo  allList;          // Table of all data, all can be searched by any index
-      set<string>        spellNameList;
-      ifstream           inFile;           // istream to import data files
-      ifstream           inFile2;
-      string             tmp, tmp2, tmp3;  // temporary strings to capture file input
-
-      allLookup["aSpellName"] = aSpellName;
-      allLookup["aSpellType"] = aSpellType;
-      allLookup["aSpellLvl"] = aSpellLvl;
+      spellLookupDir    spellLookup;      // holds all the attribute indexes for spell
+      playerLookupDir   playerLookup;     // holds all the attributes indexes for player
+      hashTable_Spell   spNameIndex;      // holds pairs of spell names, and pointers to spell obj
+      hashTable_Spell   spClassIndex;     // holds pairs of spell classes, and pointers to spell obj
+      hashTable_Spell   spTypeIndex;      // holds pairs of spell types, and pointers to spell obj
+      hashTable_Spell   spLvlIndex;       // holds pairs of spell levels, and pointers to spell obj
+      hashTable_Player  plNameIndex;      // holds pairs of player names, and pointers to player obj
+      hashTable_Player  plClassIndex;     // holds pairs of player classes, and pointers to player obj
+      hashTable_Player  plMaxLvlIndex;    // holds pairs of player max level, and pointers to player obj 
+      vector<Player>    playerList;       // vector of all the players, who can we searched by any index
+      vector<Spell>     spellList;        // vector of all the spells; all can be searched by spell index
+      set<string>       spellNameList;
+      ifstream          inFile;           // istream to import data files
+      ifstream          inFile2;
+      string            tmp, tmp2, tmp3;  // temporary strings to capture file input
 
 
       inFile.open("data2.txt");
@@ -241,7 +186,7 @@ int main()
             auto itEnd = spellList.end();
             inFile >> tmp >> tmp2;
             //cout << tmp << " " << tmp2;
-            while(itBegin != itEnd)
+            while(itBegin != itEnd-2)
             {
                   if (itBegin->name == tmp)
                   {
