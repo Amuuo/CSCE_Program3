@@ -9,9 +9,6 @@
 #include<utility>
 using namespace std;
 
-typedef unordered_map<string, unordered_multimap<string, Spell*>> lookupDir;
-typedef unordered_multimap<string, Spell*> hashTable_Spell;
-typedef unordered_multimap<string, Spell*> hashTable_Player;
 
 struct Spell
 {
@@ -23,10 +20,15 @@ struct Spell
 
 struct Player
 {
-      string name;
+      string plName;
       string plClass;
-      string maxLvl;
+      string plMaxLvl;
 };
+
+typedef unordered_map<string, unordered_multimap<string, Spell*>> spellLookupDir;
+typedef unordered_map<string, unordered_multimap<string, Player*>> playerLookupDir;
+typedef unordered_multimap<string, Spell*> hashTable_Spell;
+typedef unordered_multimap<string, Player*> hashTable_Player;
 
 void printSpell(Spell* tmpSpell)
 {
@@ -56,18 +58,19 @@ string printSpellByLvl(unordered_multimap<int, Spell*>* tmpMap, int lvl)
 
 int main()
 {
-      lookupDir        lookup;           //holds all the attribute indexes
-      hashTable_Spell  spNameIndex;      //holds pairs of spell names, and pointers to spell obj
-      hashTable_Spell  spClassIndex;     //holds pairs of spell classes, and pointers to spell obj
-      hashTable_Spell  spTypeIndex;      //holds pairs of spell types, and pointers to spell obj
-      hashTable_Spell  spLvlIndex;       //holds pairs of spell levels, and pointers to spell obj
-      hashTable_Player plNameIndex;      //holds pairs of player names, and pointers to player obj
-      hashTable_Player plClassIndex;     //holds pairs of player classes, and pointers to player obj
-      hashTable_Player plMaxLvlIndex;    //holds pairs of player max level, and pointers to player obj 
-      vector<Player>   playerList;       //vector of all the players, who can we searched by any index
-      vector<Spell>    spellList;        //vector of all the spells; all can be searched by spell index
-      ifstream         inFile;           //istream to import data files
-      string           tmp, tmp2, tmp3;  //temporary strings to capture file input
+      spellLookupDir    spellLookup;      // holds all the attribute indexes for spell
+      playerLookupDir   playerLookup;     // holds all the attributes indexes for player
+      hashTable_Spell   spNameIndex;      // holds pairs of spell names, and pointers to spell obj
+      hashTable_Spell   spClassIndex;     // holds pairs of spell classes, and pointers to spell obj
+      hashTable_Spell   spTypeIndex;      // holds pairs of spell types, and pointers to spell obj
+      hashTable_Spell   spLvlIndex;       // holds pairs of spell levels, and pointers to spell obj
+      hashTable_Player  plNameIndex;      // holds pairs of player names, and pointers to player obj
+      hashTable_Player  plClassIndex;     // holds pairs of player classes, and pointers to player obj
+      hashTable_Player  plMaxLvlIndex;    // holds pairs of player max level, and pointers to player obj 
+      vector<Player>    playerList;       // vector of all the players, who can we searched by any index
+      vector<Spell>     spellList;        // vector of all the spells; all can be searched by spell index
+      ifstream          inFile;           // istream to import data files
+      string            tmp, tmp2, tmp3;  // temporary strings to capture file input
 
 
       inFile.open("data2.txt");
@@ -98,7 +101,7 @@ int main()
       }
       inFile.close();
 
-      //initialize lookup tables for each spell attribute
+      //initialize index tables for each spell attribute
       vector<pair<string, Spell*>>*  names   = new vector<pair<string, Spell*>>;
       vector<pair<string, Spell*>>*  classes = new vector<pair<string, Spell*>>;
       vector<pair<string, Spell*>>*  levels  = new vector<pair<string, Spell*>>;
@@ -122,18 +125,14 @@ int main()
       sort(classes->begin(), classes->end());
       sort(levels->begin(), levels->end());
       //load vectors into hash tables
-      for (auto iter : *names   ) { lookup["spNameLookup"].insert(iter);  } delete names;
-      for (auto iter : *classes ) { lookup["spClassLookup"].insert(iter); } delete classes;
-      for (auto iter : *levels  ) { lookup["spLvlLookup"].insert(iter);   } delete levels;
+      for (auto iter : *names   ) { spNameIndex.insert(iter);  } delete names;
+      for (auto iter : *classes ) { spClassIndex.insert(iter); } delete classes;
+      for (auto iter : *levels  ) { spLvlIndex.insert(iter);   } delete levels;
 
-      lookup["spNameLookup"]  = spNameIndex;
-      lookup["spClassLookup"] = spClassIndex;
-      lookup["spLvlLookup"]   = spLvlIndex;
-      /*
-      sort(begin(spNameLookup), end(spNameLookup));
-      sort(begin(spTypeLookup), end(spTypeLookup));
-      sort(begin(spLvlLookup), end(spLvlLookup));
-      */
+      spellLookup["spNameLookup"]  = spNameIndex;
+      spellLookup["spClassLookup"] = spClassIndex;
+      spellLookup["spLvlLookup"]   = spLvlIndex;
+
       inFile.open("data3.txt");
       if (inFile.fail())
       {
@@ -178,7 +177,7 @@ int main()
       }
       sort(types->begin(), types->end());
       for (auto iter : *types) { spTypeIndex.insert(iter); } delete types;
-      lookup["spTypeLookup"] = spTypeIndex;
+      spellLookup["spTypeLookup"] = spTypeIndex;
 
       inFile.open("data3.txt");
       if (inFile.fail())
@@ -186,6 +185,52 @@ int main()
             cout << "File failed to open. Exiting program...";
             exit(1);
       }
+      inFile >> tmp >> tmp2 >> tmp3;
+      while (!inFile.eof())
+      {
+            Player p;
+
+            inFile >> tmp >> tmp2 >> tmp3;
+
+            p.plName   = tmp;
+            p.plClass  = tmp2;
+            p.plMaxLvl = tmp3;
+
+            playerList.push_back(p);
+      }
+      inFile.close();
+      //initialize index tables for each player attribute
+      vector<pair<string, Player*>>*  pName   = new vector<pair<string, Player*>>;
+      vector<pair<string, Player*>>*  pClass  = new vector<pair<string, Player*>>;
+      vector<pair<string, Player*>>*  pMaxLvl = new vector<pair<string, Player*>>;
+      for (auto iter : playerList)
+      {
+            static int i = 0;
+            pair<string, Player*> tmpPair = make_pair(iter.plName, &playerList.at(i));
+            pName->push_back(tmpPair);
+
+            pair<string, Player*> tmpPair2 = make_pair(iter.plClass, &playerList.at(i));
+            pClass->push_back(tmpPair2);
+
+            pair<string, Player*> tmpPair3 = make_pair(iter.plMaxLvl, &playerList.at(i));
+            pMaxLvl->push_back(tmpPair3);
+            i++;
+      }
+      //sort vectors
+      sort ( pName->begin(),   pName->end()   );
+      sort ( pClass->begin(),  pClass->end()  );
+      sort ( pMaxLvl->begin(), pMaxLvl->end() );
+
+      //load vectors into hash tables
+      for (auto iter : *pName)   { plNameIndex.insert(iter);   } delete pName;
+      for (auto iter : *pClass)  { plClassIndex.insert(iter);  } delete pClass;
+      for (auto iter : *pMaxLvl) { plMaxLvlIndex.insert(iter); } delete pMaxLvl;
+
+      //group player indexes in playerLookup for easy lookup
+      playerLookup["plNameIndex"]   = plNameIndex;
+      playerLookup["plClassIndex"]  = plClassIndex;
+      playerLookup["plMaxLvlIndex"] = plMaxLvlIndex;
+
       char userResponse;
       do
       {
@@ -196,6 +241,9 @@ int main()
             cout << "2 - Search Spell By Class\n";
             cout << "3 - Search Spell By Type\n";
             cout << "4 - Search Spell by Level\n";
+            cout << "5 - Search Player by Name\n";
+            cout << "6 = Search Player by Class\n";
+            cout << "7 = Search Player by Max Level\n";
             cout << "Enter 1-4: "; cin >> menuChoice;
 
             switch (menuChoice)
@@ -248,10 +296,25 @@ int main()
                   case 4:
                   {
                         cout << "\n\nEnter the Spell Level: "; cin >> choice;
-                        auto iter2 = spLvlIndex.find(choice);
-                        if (spClassIndex.count(choice) > 1)
+                        auto iter2 = spellLookup["spLvlIndex"].find(choice);
+                        if (spellLookup["spLvlIndex"].count(choice) > 1)
                         {
-                              auto iter = spLvlIndex.equal_range(choice);
+                              auto iter = spellLookup["spLvlIndex"].equal_range(choice);
+                              for (; iter2 != iter.second; ++iter2)
+                              {
+                                    printSpell(iter2->second);
+                              }
+                        }
+                        else { printSpell(iter2->second); }
+                        break;
+                  }
+                  case 5:
+                  {
+                        cout << "\n\nEnter the Player Name: "; cin >> choice;
+                        auto iter2 = playerLookup["plNameIndex"].find(choice);
+                        if (playerLookup["plNameIndex"].count(choice) > 1)
+                        {
+                              auto iter = playerLookup["plNameIndex"].equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
                                     printSpell(iter2->second);
