@@ -11,22 +11,98 @@
 using namespace std;
 
 
-struct Spell
+class SpellClass
 {
-      string  name;
-      string  sClass;
-      string  type;
-      string  lvl;
+      private:
+      
+            SpellClass();
+            string  name;
+            string  sClass;
+            string  lvl;
+      public:
+            SpellClass(string n, string c, string l)
+            {
+                  name   = n;
+                  sClass = c;
+                  lvl    = l;
+            }
+            string getName()  { return name;   }
+            string getClass() { return sClass; }
+            string getLvl()   { return lvl;    }
+
+
+};
+class SpellClassName
+{
+private:
+            SpellClassName();
+            string name;
+            SpellClass* spellClassObject;
+public:
+            SpellClassName(string n, SpellClass* s)
+            {
+                  name = n;
+                  spellClassObject = s;
+            }
+};
+struct SpellClassClass
+{
+            string sClass;
+            SpellClass* spellClassObject;
+};
+struct SpellClassLvl
+{
+            string lvl;
+            SpellClass* spellClassObject;
 };
 
-struct Player
+class SpellType
 {
-      string plName;
-      string plClass;
-      string plMaxLvl;
+      private:
+            SpellType();
+            SpellType(string s, string t)
+            {
+                  name = s;
+                  type   = t;
+            }
+            string name;
+            string type;
+      public:
+            string getClass() { return name; }
+            string getType()  { return type;   }
 };
 
-struct allInfo
+struct SpellTypeNameIndex
+{
+      string name;
+      SpellType* spellTypeObject;
+};
+struct SpellTypeTypeIndex
+{
+      string type;
+      SpellType* spellTypeObject;
+};
+
+class Player
+{
+      private:
+            Player();
+            Player(string n, string c, string m)
+            {
+                  plName   = n;
+                  plClass  = c;
+                  plMaxLvl = m;
+            }
+            string plName;
+            string plClass;
+            string plMaxLvl;
+      public:
+            string getName()   { return plName;   }
+            string getClass()  { return plClass;  }
+            string getMaxLvl() { return plMaxLvl; }
+};
+
+class allInfo
 {
       vector<string> spellName;
       vector<string> spellClass;
@@ -37,19 +113,24 @@ struct allInfo
       string PlayerMaxLvl;
 };
 
-typedef unordered_map<string, unordered_multimap<string, Spell*>>   spellLookupDir  ;
+typedef unordered_map<string, unordered_multimap<string, SpellClass*>>   spellLookupDir  ;
 typedef unordered_map<string, unordered_multimap<string, Player*>>  playerLookupDir ;
 typedef unordered_map<string, unordered_multimap<string, allInfo*>> allInfoLookupDir;
-typedef unordered_multimap<string, Spell*>                          Index_Spell ;
+typedef unordered_multimap<string, SpellClass*>                     Index_Spell ;
 typedef unordered_multimap<string, Player*>                         Index_Player;
 typedef unordered_multimap<string, allInfo*>                        Index_allInfo;
+typedef vector<pair<string, allInfo*>>                              infoPair;
 typedef vector<Player>                                              HashTable_Player;
-typedef vector<Spell>                                               HashTable_Spell;
-typedef vector<allInfo>                                             HashTable_allInfo;
-typedef vector<vector<string>>                                      tmpVecTable;
+//typedef vector<SpellClass>                                          HashTable_Spell;
+typedef set<SpellClass>                                             SpellClassSet;
+typedef unordered_multimap<string, SpellClassName>                  SpellClassNameIndex;
+typedef set<SpellClassClass>                                        SpellClassClassIndex;
+typedef set<SpellClassLvl>                                          SpellClassLvlIndex;
+typedef vector<allInfo>                                             HashTable_allInfo;                             
+typedef unordered_multimap<vector<string>, allInfo*>                tmpVecInfoIndex;
 typedef vector<string>                                              tmpTable;
 
-void initializeJoinTable(spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, allInfoLookupDir& tmpAll, HashTable_allInfo& tmpA, HashTable_Player& tmpP, HashTable_Spell& tmpS)
+void initializeJoinTable(/*spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, allInfoLookupDir& tmpAll, */HashTable_allInfo& tmpA, HashTable_Player& tmpP, HashTable_Spell& tmpS)
 {
       /*tmpVecTable* spellName    = new tmpVecTable;
       tmpVecTable* spellClass   = new tmpVecTable;
@@ -110,6 +191,24 @@ void initializeJoinTable(spellLookupDir &tmpSpell, playerLookupDir& tmpPlayer, a
             ++i;
       }
 }
+void initializeIndex(allInfoLookupDir& tmpDir, Index_allInfo& tmpInd, HashTable_allInfo& tmpHash)
+{
+      vector<pair<string, allInfo*>>* spellName    = new vector<pair<string, allInfo*>>;
+      vector<pair<string, allInfo*>>* spellClass   = new vector<pair<string, allInfo*>>;
+      vector<pair<string, allInfo*>>* spellType    = new vector<pair<string, allInfo*>>;
+      vector<pair<string, allInfo*>>* spellLvl     = new vector<pair<string, allInfo*>>;
+      infoPair*       playerName   = new infoPair;
+      infoPair*       playerClass  = new infoPair;
+      infoPair*       playerMaxLvl = new infoPair;
+
+      for (auto iter : tmpHash)
+      {
+            int i = 0;
+            pair<string, allInfo*> tmpPair = make_pair(iter.playerName, &tmpHash.at(i));
+            playerName->push_back(tmpPair);
+      }
+}
+
 void printAllHeader()
 {
       cout << endl << "     " << setw(20) << left << "Name" << setw(15) << "Class" << setw(15) << "Lvl" << setw(15) << "Spell"
@@ -134,7 +233,7 @@ void printSpellHeader()
                    << setw(10) << "Class" << setw(10) <<   "Level\n";
 }
 
-void printSpell(Spell* tmpSpell)
+void printSpell(SpellClass* tmpSpell)
 {
       cout << endl << "     " << setw(20) << tmpSpell->name; //   << endl;
       cout << setw(15) << tmpSpell->type;// << endl;
@@ -186,29 +285,33 @@ string printSpellByLvl(unordered_multimap<int, Spell*>* tmpMap, int lvl)
 
 int main()
 {
-      spellLookupDir     spellLookup;      // holds all the attribute indexes for spell
-      playerLookupDir    playerLookup;     // holds all the attributes indexes for player
-      allInfoLookupDir   allLookup;
-      Index_Spell        spNameIndex;      // holds pairs of spell names, and pointers to spell obj
-      Index_Spell        spClassIndex;     // holds pairs of spell classes, and pointers to spell obj
-      Index_Spell        spTypeIndex;      // holds pairs of spell types, and pointers to spell obj
-      Index_Spell        spLvlIndex;       // holds pairs of spell levels, and pointers to spell obj
-      Index_Player       plNameIndex;      // holds pairs of player names, and pointers to player obj
-      Index_Player       plClassIndex;     // holds pairs of player classes, and pointers to player obj
-      Index_Player       plMaxLvlIndex;    // holds pairs of player max level, and pointers to player obj 
-      Index_allInfo      aSpellName;
-      Index_allInfo      aSpellType;
-      Index_allInfo      aSpellLvl;
-      Index_allInfo      aClass;
-      Index_allInfo      aLvl;
-      Index_allInfo      aName;
-      HashTable_Player   playerList;       // Table of all the players, who can we searched by any index
-      HashTable_Spell    spellList;        // Table of all the spells; all can be searched by spell index
-      HashTable_allInfo  allList;          // Table of all data, all can be searched by any index
-      set<string>        spellNameList;
-      ifstream           inFile;           // istream to import data files
-      ifstream           inFile2;
-      string             tmp, tmp2, tmp3;  // temporary strings to capture file input
+      spellLookupDir      spellLookup;      // holds all the attribute indexes for spell
+      playerLookupDir     playerLookup;     // holds all the attributes indexes for player
+      allInfoLookupDir    allLookup;
+      Index_Spell         spNameIndex;      // holds pairs of spell names, and pointers to spell obj
+      Index_Spell         spClassIndex;     // holds pairs of spell classes, and pointers to spell obj
+      Index_Spell         spTypeIndex;      // holds pairs of spell types, and pointers to spell obj
+      Index_Spell         spLvlIndex;       // holds pairs of spell levels, and pointers to spell obj
+      Index_Player        plNameIndex;      // holds pairs of player names, and pointers to player obj
+      Index_Player        plClassIndex;     // holds pairs of player classes, and pointers to player obj
+      Index_Player        plMaxLvlIndex;    // holds pairs of player max level, and pointers to player obj 
+      Index_allInfo       aSpellName;
+      Index_allInfo       aSpellType;
+      Index_allInfo       aSpellLvl;
+      Index_allInfo       aClass;
+      Index_allInfo       aLvl;
+      Index_allInfo       aName;
+      HashTable_Player    playerList;       // Table of all the players, who can we searched by any index
+      //HashTable_Spell    spellList;        // Table of all the spells; all can be searched by spell index
+      SpellClassSet       spellClass;
+      SpellClassNameIndex spellClassNameIndex;
+      SpellClassClassIndex spellClassClassIndex;
+      SpellClassLvlIndex  spellClassLvlIndex;
+      HashTable_allInfo   allList;          // Table of all data, all can be searched by any index
+      set<string>         spellNameList;
+      ifstream            inFile;           // istream to import data files
+      ifstream            inFile2;
+      string              tmp, tmp2, tmp3;  // temporary strings to capture file input
 
       allLookup["aSpellName"] = aSpellName;
       allLookup["aSpellType"] = aSpellType;
@@ -217,7 +320,7 @@ int main()
       allLookup["aLvl"]       = aLvl;
       allLookup["aName"]      = aName;
 
-
+      //import spell info, containing spell names, class, and level
       inFile.open("data2.txt");
       if (inFile.fail())
       {
@@ -227,41 +330,35 @@ int main()
       //pass by column headers
       inFile >> tmp >> tmp2 >> tmp3;
       //load spell names in from file
-      string tmpClass = "";
       while (!inFile.eof())
       {
-            string tmpName;
-            Spell sp;
-
             inFile >> tmp;
             inFile >> tmp2;
             inFile >> tmp3;
 
-            sp.name   = tmp;
-            sp.sClass = tmp2;
-            sp.lvl    = tmp3;
-            sp.type   = "";
-
-            spellList.push_back(sp);
+            SpellClass sp(tmp, tmp2, tmp3);
+            spellClass.insert(sp);
+            SpellClassName tmpSp(tmp, &sp);
+            spellClassNameIndex[tmp] = tmpSp;
       }
       inFile.close();
 
       //initialize index tables for each spell attribute
-      vector<pair<string, Spell*>>*  names   = new vector<pair<string, Spell*>>;
-      vector<pair<string, Spell*>>*  classes = new vector<pair<string, Spell*>>;
-      vector<pair<string, Spell*>>*  levels  = new vector<pair<string, Spell*>>;
+      vector<pair<string, SpellClass*>>*  names   = new vector<pair<string, SpellClass*>>;
+      vector<pair<string, SpellClass*>>*  classes = new vector<pair<string, SpellClass*>>;
+      vector<pair<string, SpellClass*>>*  levels  = new vector<pair<string, SpellClass*>>;
 
       //load names, classes, and levels into vectors alongside a ptr to the parent object
       for (auto iter : spellList)
       {
             static int i = 0;
-            pair<string, Spell*> tmpPair = make_pair(iter.name, &spellList.at(i));
+            pair<string, SpellClass*> tmpPair = make_pair(iter.name, &spellList.at(i));
             names->push_back(tmpPair);
 
-            pair<string, Spell*> tmpPair2 = make_pair(iter.sClass, &spellList.at(i));
+            pair<string, SpellClass*> tmpPair2 = make_pair(iter.sClass, &spellList.at(i));
             classes->push_back(tmpPair2);
 
-            pair<string, Spell*> tmpPair3 = make_pair(iter.lvl, &spellList.at(i));
+            pair<string, SpellClass*> tmpPair3 = make_pair(iter.lvl, &spellList.at(i));
             levels->push_back(tmpPair3);
             i++;
       }
@@ -283,6 +380,7 @@ int main()
             spellNameList.insert(iter.first);
       }
 
+      //import spell types, which inclues spell name and spell type
       inFile.open("data3.txt");
       if (inFile.fail())
       {
@@ -311,11 +409,11 @@ int main()
       }
       inFile.close();
       //create temporary vector and load types in
-      vector<pair<string, Spell*>>* types = new vector<pair<string, Spell*>>;
+      vector<pair<string, SpellClass*>>* types = new vector<pair<string, SpellClass*>>;
       for (auto iter : spellList)
       {
             static int i = 0;
-            pair<string, Spell*> tmpPair = make_pair(iter.type, &spellList.at(i));
+            pair<string, SpellClass*> tmpPair = make_pair(iter.type, &spellList.at(i));
             types->push_back(tmpPair);
             ++i;
       }
@@ -323,6 +421,8 @@ int main()
       for (auto iter : *types) { spTypeIndex.insert(iter); } delete types;
       spellLookup["spTypeLookup"] = spTypeIndex;
 
+
+      //import player file, which includes player name, class, and max level
       inFile.open("data1.txt");
       if (inFile.fail())
       {
@@ -374,6 +474,8 @@ int main()
       playerLookup["plNameIndex"]   = plNameIndex;
       playerLookup["plClassIndex"]  = plClassIndex;
       playerLookup["plMaxLvlIndex"] = plMaxLvlIndex;
+
+      initializeJoinTable(allList, playerList, spellList);
 
       char userResponse;
       do
