@@ -20,9 +20,9 @@ class SpellClass
       
             SpellClass();
             array<string, 3> attr = { "SpellName", "Class", "Level" };
-            string           spName;
-            string           pClass;
-            string           lvl;
+            string  spName;
+            string  pClass;
+            string  lvl;
 
       public:
 
@@ -454,7 +454,6 @@ template <class L, class R>
 void join12(L &firstTable, R &secondTable)
 {
       string overlap;
-      //search for overlapping columns
       for (auto iter : firstTable)
       {
             for (auto iter2 : secondTable)
@@ -470,7 +469,7 @@ void join12(L &firstTable, R &secondTable)
                   break;
             }
             break;
-      }y
+      }
       for (auto iter : firstTable)
       {
             try
