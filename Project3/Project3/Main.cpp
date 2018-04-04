@@ -21,7 +21,9 @@ public:
             string  name;
             string  sClass;
             string  lvl;
+
       public:
+
             SpellClass(string n, string c, string l)
             {
                   name   = n;
@@ -38,38 +40,40 @@ public:
                   cout << "\tClass:" << sClass;
                   cout << "\tLvl: " << lvl;
             }
-
-
 };
 //for spell name index
 //-------------------------------------------------------
 class SpellClassName
 {
       private:
-                  SpellClassName();
-                  string name;
-                  SpellClass* spellClassObject;
-      public:
-                  SpellClassName(string n, SpellClass* s)
-                  {
-                        name = n;
-                        spellClassObject = s;
-                  }
-                  string getName()     { return name; }
-                  SpellClass* getObj() { return spellClassObject; }
-                  SpellClassName* getThis() { return this; }
-                  
 
+            SpellClassName();
+            string name;
+            SpellClass* spellClassObject;
+
+      public:
+
+            SpellClassName(string n, SpellClass* s)
+            {
+                  name = n;
+                  spellClassObject = s;
+            }
+            string getName()     { return name; }
+            SpellClass* getObj() { return spellClassObject; }
+            SpellClassName* getThis() { return this; }                
 };
 //for spell class index
 //-------------------------------------------------------
 class SpellClassClass
 {
       private:
-                  SpellClassClass();
-                  string sClass;
-                  SpellClass* spellClassObject;
+
+            SpellClassClass();
+            string sClass;
+            SpellClass* spellClassObject;
+
       public:
+
             SpellClassClass(string c, SpellClass* s)
             {
                   sClass = c;
@@ -84,10 +88,13 @@ class SpellClassClass
 class SpellClassLvl
 {
       private:
-                  SpellClassLvl();
-                  string lvl;
-                  SpellClass* spellClassObject;
+
+            SpellClassLvl();
+            string lvl;
+            SpellClass* spellClassObject;
+
       public:
+
             SpellClassLvl(string l, SpellClass* s)
             {
                   lvl = l;
@@ -102,16 +109,19 @@ class SpellClassLvl
 class SpellType
 {
       private:
+
             SpellType();
+            string name;
+            string type;
+
+      public:
+
             SpellType(string s, string t)
             {
                   name = s;
                   type   = t;
             }
-            string name;
-            string type;
-      public:
-            string getClass() { return name; }
+            string getName() { return name; }
             string getType()  { return type; }
             void print()
             {
@@ -124,29 +134,33 @@ class SpellType
 class SpellTypeName
 {
       private:
+
             SpellTypeName();
             string name;
             SpellType* spellTypeObject;
+
       public:
+
             SpellTypeName(string n, SpellType* s)
             {
                   name = n;
                   spellTypeObject = s;
             }
             string getName()    { return name; }
-            SpellType* getObj() { return spellTypeObject; }
-
-            
+            SpellType* getObj() { return spellTypeObject; }         
 };
 //for spellType type index
 //-------------------------------------------------------
 class SpellTypeType
 {
       private:
+
             SpellTypeType();
             string type;
             SpellType* spellTypeObject;
+
       public:
+
             SpellTypeType(string t, SpellType* s)
             {
                   type = t;
@@ -164,7 +178,9 @@ class Player
             string plName;
             string plClass;
             string plMaxLvl;
+
       public:
+
             Player(string n, string c, string m)
             {
                   plName   = n;
@@ -187,10 +203,13 @@ class Player
 class PlayerName
 {
       private:
+
             PlayerName();
             string name;
             Player* playerObject;
+
       public:
+
             PlayerName(string s, Player* p)
             {
                   name = s;
@@ -204,10 +223,13 @@ class PlayerName
 class PlayerClass
 {
       private:
+
             PlayerClass();
             string pClass;
             Player* playerObject;
+
       public:
+
             PlayerClass(string s, Player* p)
             {
                   pClass = s;
@@ -221,10 +243,13 @@ class PlayerClass
 class PlayerLvl
 {
       private:
+
             PlayerLvl();
             string lvl;
             Player* playerObject;
+
       public:
+
             PlayerLvl(string s, Player* p)
             {
                   lvl = s;
@@ -260,6 +285,7 @@ int main()
       SpellClassClassIndex  spellClassClassIndex;
       SpellClassLvlIndex    spellClassLvlIndex;
       //----------SPELL TYPE STUFF-----------
+      SpellTypeSet          spellTypeList;
       SpellTypeNameIndex    spellTypeNameIndex;
       SpellTypeTypeIndex    spellTypeTypeIndex;
 
@@ -268,6 +294,36 @@ int main()
       ifstream              inFile;                // istream to import data files
       ifstream              inFile2;
       string                tmp, tmp2, tmp3;       // temporary strings to capture file input
+
+
+      inFile.open("data1.txt");
+      if (inFile.fail())
+      {
+            cout << "File failed to open. Exiting program...";
+            exit(1);
+      }
+      inFile >> tmp >> tmp2 >> tmp3;
+      while (!inFile.eof())
+      {
+
+            inFile >> tmp;
+            inFile >> tmp2;
+            inFile >> tmp3;
+            
+            Player p(tmp, tmp2, tmp3);                                    
+            playerList.push_back(p);
+      }
+      for (int i = 0; i < playerList.size(); ++i)
+      {
+            PlayerName   tmpP(playerList[i].getName(), &playerList[i]);
+            PlayerClass  tmpCl(playerList[i].getClass(), &playerList[i]);
+            PlayerLvl    tmpLv(playerList[i].getMaxLvl(), &playerList[i]);
+
+            playerNameIndex.insert(make_pair(playerList[i].getName(), tmpP));  //[tmpName ]  = tmpSp;
+            playerClassIndex.insert(make_pair(playerList[i].getClass(), tmpCl)); //[tmpClass]  = tmpC;
+            playerLvlIndex.insert(make_pair(playerList[i].getMaxLvl(), tmpLv));   //[tmpLvl  ]
+      }
+      inFile.close();
 
 
       //import spell info, containing spell names, class, and level
@@ -306,6 +362,36 @@ int main()
       }
       inFile.close();
    
+      //import spell types, which inclues spell name and spell type
+      inFile.open("data3.txt");
+      if (inFile.fail())
+      {
+            cout << "File failed to open, exiting program\n";
+            exit(1);
+      }
+      //pass by column headers 
+      inFile >> tmp >> tmp2;
+      //import data2.txt and 
+      string tmpName, tmpType;
+            while (!inFile.eof())
+            {
+                  inFile >> tmpName;
+                  inFile >> tmpType;
+
+                  SpellType st(tmpName, tmpType);
+                  spellTypeList.push_back(st);
+            }
+      inFile.close();
+
+      for (int i = 0; i < spellTypeList.size(); ++i)
+      {
+            SpellTypeName   tmpTn(spellTypeList[i].getName(), &spellTypeList[i]);
+            SpellTypeType  tmpTT(spellTypeList[i].getType(), &spellTypeList[i]);
+
+            spellTypeNameIndex.insert(make_pair(spellTypeList[i].getName(), tmpTn));  //[tmpName ]  = tmpSp;
+            spellTypeTypeIndex.insert(make_pair(spellTypeList[i].getType(), tmpTT)); //[tmpClass]  = tmpC;
+
+      }
       cout << "\nspellClassNameIndex:\n";
       for (auto iter : spellClassNameIndex)
       {
@@ -322,107 +408,8 @@ int main()
             iter2.second.getObj()->printName();
       }
 
-      inFile.open("data1.txt");
-      if (inFile.fail())
-      {
-            cout << "File failed to open. Exiting program...";
-            exit(1);
-      }
-      inFile >> tmp >> tmp2 >> tmp3;
-      while (!inFile.eof())
-      {
-
-            inFile >> tmp;
-            inFile >> tmp2;
-            inFile >> tmp3;
-            
-            Player p(tmp, tmp2, tmp3);                                    
-            playerList.push_back(p);
-      }
-      for (int i = 0; i < playerList.size(); ++i)
-      {
-            PlayerName   tmpP(playerList[i].getName(), &playerList[i]);
-            PlayerClass  tmpCl(playerList[i].getClass(), &playerList[i]);
-            PlayerLvl    tmpLv(playerList[i].getMaxLvl(), &playerList[i]);
-
-            playerNameIndex.insert(make_pair(playerList[i].getName(), tmpP));  //[tmpName ]  = tmpSp;
-            playerClassIndex.insert(make_pair(playerList[i].getClass(), tmpCl)); //[tmpClass]  = tmpC;
-            playerLvlIndex.insert(make_pair(playerList[i].getMaxLvl(), tmpLv));   //[tmpLvl  ]
-      }
       system("PAUSE");
-      /*
-      for (auto iter : spellLookup["spNameIndex"])
-      {
-            spellNameList.insert(iter.first);
-      }
 
-      //import spell types, which inclues spell name and spell type
-      inFile.open("data3.txt");
-      if (inFile.fail())
-      {
-            cout << "File failed to open, exiting program\n";
-            exit(1);
-      }
-      //pass by column headers 
-      inFile >> tmp >> tmp2;
-      //import data2.txt and 
-      string tmpName, tmpType
-      while (!inFile.eof())
-      {
-            inFile >> tmpName >> tmpType;
-            
-      }
-      inFile.close();
-      //create temporary vector and load types in
-      vector<pair<string, SpellClass*>>* types = new vector<pair<string, SpellClass*>>;
-      for (auto iter : spellList)
-      {
-            static int i = 0;
-            pair<string, SpellClass*> tmpPair = make_pair(iter.type, &spellList.at(i));
-            types->push_back(tmpPair);
-            ++i;
-      }
-      sort(types->begin(), types->end());
-      for (auto iter : *types) { spTypeIndex.insert(iter); } delete types;
-      spellLookup["spTypeLookup"] = spTypeIndex;
-
-
-      //import player file, which includes player name, class, and max level
-      
-      inFile.close();
-      //initialize index tables for each player attribute
-      vector<pair<string, Player*>>*  pName   = new vector<pair<string, Player*>>;
-      vector<pair<string, Player*>>*  pClass  = new vector<pair<string, Player*>>;
-      vector<pair<string, Player*>>*  pMaxLvl = new vector<pair<string, Player*>>;
-      for (auto iter : playerList)
-      {
-            static int i = 0;
-            pair<string, Player*> tmpPair = make_pair(iter.plName, &playerList.at(i));
-            pName->push_back(tmpPair);
-
-            pair<string, Player*> tmpPair2 = make_pair(iter.plClass, &playerList.at(i));
-            pClass->push_back(tmpPair2);
-
-            pair<string, Player*> tmpPair3 = make_pair(iter.plMaxLvl, &playerList.at(i));
-            pMaxLvl->push_back(tmpPair3);
-            i++;
-      }
-      //sort vectors
-      sort ( pName->begin(),   pName->end()   );
-      sort ( pClass->begin(),  pClass->end()  );
-      sort ( pMaxLvl->begin(), pMaxLvl->end() );
-
-      //load vectors into hash tables
-      for (auto iter : *pName)   { plNameIndex.insert(iter);   } delete pName;
-      for (auto iter : *pClass)  { plClassIndex.insert(iter);  } delete pClass;
-      for (auto iter : *pMaxLvl) { plMaxLvlIndex.insert(iter); } delete pMaxLvl;
-
-      //group player indexes in playerLookup for easy lookup
-      playerLookup["plNameIndex"]   = plNameIndex;
-      playerLookup["plClassIndex"]  = plClassIndex;
-      playerLookup["plMaxLvlIndex"] = plMaxLvlIndex;
-
-      initializeJoinTable(allList, playerList, spellList);
 
       char userResponse;
       do
@@ -443,19 +430,18 @@ int main()
             {
                   case 1:
                   {
-                        listSpellAttribute(spellNameList);
                         cout << "\nEnter Spell Name: "; cin >> choice;
-                        auto iter2 = spNameIndex.find(choice);
-                        printSpellHeader();
-                        if (spNameIndex.count(choice) > 1)
+                        auto iter2 = spellClassNameIndex.find(choice);
+                        //printSpellHeader();
+                        if (spellClassNameIndex.count(choice) > 1)
                         {
-                              auto iter = spNameIndex.equal_range(choice);
+                              auto iter = spellClassNameIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    printSpell(iter2->second);
+                                    (iter2->second).getObj()->printName();
                               }
                         }
-                        else { printSpell(iter2->second); }
+                        else { (iter2->second).getObj()->printName(); }
                         break;
                   }
                   case 2:
