@@ -11,6 +11,34 @@
 #include<iomanip>
 using namespace std;
 
+typedef vector<Player     >                              PlayerSet;
+typedef vector<SpellClass >                              SpellClassSet;
+typedef vector<SpellType  >                              SpellTypeSet;
+typedef unordered_multimap<string, SpellClassName  >     SpellClassNameIndex;
+typedef unordered_multimap<string, SpellClassClass >     SpellClassClassIndex;
+typedef unordered_multimap<string, SpellClassLvl   >     SpellClassLvlIndex;
+typedef unordered_multimap<string, SpellTypeName   >     SpellTypeNameIndex;
+typedef unordered_multimap<string, SpellTypeType   >     SpellTypeTypeIndex;
+typedef unordered_multimap<string, PlayerName      >     PlayerNameIndex;
+typedef unordered_multimap<string, PlayerClass     >     PlayerClassIndex;
+typedef unordered_multimap<string, PlayerLvl       >     PlayerLvlIndex;
+
+//------------PLAYER STUFF-------------
+PlayerSet             playerList;
+PlayerNameIndex       playerNameIndex;
+PlayerClassIndex      playerClassIndex;
+PlayerLvlIndex        playerLvlIndex;
+//------------SPELL STUFF--------------
+SpellClassSet         spellClassList;
+SpellClassNameIndex   spellClassNameIndex;
+SpellClassClassIndex  spellClassClassIndex;
+SpellClassLvlIndex    spellClassLvlIndex;
+//----------SPELL TYPE STUFF-----------
+SpellTypeSet          spellTypeList;
+SpellTypeNameIndex    spellTypeNameIndex;
+SpellTypeTypeIndex    spellTypeTypeIndex;
+
+
 //tuples from data2.txt
 class SpellClass
 {
@@ -18,6 +46,7 @@ public:
       private:
       
             SpellClass();
+            string attr[3] = { "SpellName", "Class", "Level" };
             string  name;
             string  sClass;
             string  lvl;
@@ -34,11 +63,20 @@ public:
             string getClass() { return sClass; }
             string getLvl()   { return lvl;    }
             SpellClass* getThis() { return this; }
-            void printName()
+            void print()
             {
-                  cout << "\n"  << left << "\t" << setw(20) << name;
+                  cout  << left << "\t" << setw(20) << name;
                   cout  << "" << setw(15) << sClass;
                   cout  << "Lvl: " << setw(10) << lvl;
+            }
+            void printExcept(string x)
+            {
+                  if (x == "SpellName")
+                        cout << "\t" << left << setw(20) << sClass << setw(20) << lvl;
+                  if (x == "Class")
+                        cout << "\t" << left << setw(20) << name << setw(20) << lvl;
+                  if (x == "Level")
+                        cout << "\t" << left << setw(20) << name << setw(20) << sClass;
             }
             friend bool operator< (SpellClass &left,SpellClass &right)
             {
@@ -119,6 +157,7 @@ class SpellType
       private:
 
             SpellType();
+            string attr[2] = { "SpellName", "SpellType" };
             string name;
             string type;
 
@@ -133,8 +172,15 @@ class SpellType
             string getType()  { return type; }
             void print()
             {
-                  cout  << left << "\n\tSpell Name: " << setw(20) << name;
+                  cout  << left << "\tSpell Name: " << setw(20) << name;
                   cout  << "Type Name:" << setw(20) << type;
+            }
+            void printExcept(string x)
+            {
+                  if (x == "SpellName")
+                        cout << "\t" << left << setw(20) << type;
+                  if (x == "SpellType")
+                        cout << "\t" << left << setw(20) << name;
             }
             friend bool operator< (SpellType &left, SpellType &right)
             {
@@ -188,8 +234,9 @@ class SpellTypeType
 //-------------------------------------------------------
 class Player
 {
-      private:
-            Player();
+private:
+      Player();
+            string attr[3] = { "PlayerName", "Class", "Level" };
             string plName;
             string plClass;
             string plMaxLvl;
@@ -205,11 +252,20 @@ class Player
             string getName()   { return plName;   }
             string getClass()  { return plClass;  }
             string getMaxLvl() { return plMaxLvl; }
-            void printName()
+            void print()
             {
-                  cout  << left << "\n\tPlayer Name:" << setw(20) << plName;
+                  cout  << left << "\tPlayer Name:" << setw(20) << plName;
                   cout  << "Player Class:" << setw(20) << plClass;
                   cout  << "Player MaxLvl: " << setw(20) << plMaxLvl;
+            }
+            void printExcept(string x) 
+            {
+                  if (x == "PlayerName") 
+                        cout << "\t" << left << setw(20) << plClass << setw(20) << plMaxLvl;
+                  if (x == "Class")
+                        cout << "\t" << left << setw(20) << plName << setw(20) << plMaxLvl;
+                  if (x == "Level")
+                        cout << "\t" << left << setw(20) << plName << setw(20) << plClass;                                    
             }
             friend bool operator< (Player &left,Player &right)
             {
@@ -237,6 +293,7 @@ class PlayerName
             }
             string getName() { return name; }
             Player* getObj() { return playerObject; }
+            void print() { cout << name; }
 };
 //for Player class index
 //-------------------------------------------------------
@@ -257,6 +314,7 @@ class PlayerClass
             }
             string getClass() { return pClass; }
             Player* getObj() { return playerObject; }
+            void print() { cout << pClass; }
 };
 //for Player level index
 //-------------------------------------------------------
@@ -277,42 +335,40 @@ class PlayerLvl
             }
             string getLvl() { return lvl; }
             Player* getObj() { return playerObject; }
+            void print() { lvl; }
 };
 //-------------------------------------------------------
 
-typedef vector<Player>                                    PlayerSet;
-typedef vector<SpellClass>                                SpellClassSet;
-typedef vector<SpellType>                                 SpellTypeSet;
-typedef unordered_multimap<string, SpellClassName>        SpellClassNameIndex;
-typedef unordered_multimap<string, SpellClassClass>       SpellClassClassIndex;
-typedef unordered_multimap<string, SpellClassLvl>         SpellClassLvlIndex;                         
-typedef unordered_multimap<string, SpellTypeName>         SpellTypeNameIndex;
-typedef unordered_multimap<string, SpellTypeType>         SpellTypeTypeIndex;
-typedef unordered_multimap<string, PlayerName>            PlayerNameIndex;
-typedef unordered_multimap<string, PlayerClass>           PlayerClassIndex;
-typedef unordered_multimap<string, PlayerLvl>             PlayerLvlIndex;
+
+template <class L, class R>
+void join(L a, R b)
+{
+      string match;
+      //search for matching column headers
+      for (auto i : a.attr)
+      {
+            for (auto j : b.attr)
+            {
+                  if (a.attr[i] == b.attr[j])
+                        match = a.attr[i];
+            }
+      }
+      if (match != NULL)
+      {
+            a.printexcept(match);
+            b.print();
+      }
+      else
+      {
+            cout << "\nThese tables have no columns in common";
+      }
+}
 
 int main()
 {
-      //------------PLAYER STUFF-------------
-      PlayerSet             playerList;           
-      PlayerNameIndex       playerNameIndex;
-      PlayerClassIndex      playerClassIndex;
-      PlayerLvlIndex        playerLvlIndex;
-      //------------SPELL STUFF--------------
-      SpellClassSet         spellClassList;
-      SpellClassNameIndex   spellClassNameIndex;
-      SpellClassClassIndex  spellClassClassIndex;
-      SpellClassLvlIndex    spellClassLvlIndex;
-      //----------SPELL TYPE STUFF-----------
-      SpellTypeSet          spellTypeList;
-      SpellTypeNameIndex    spellTypeNameIndex;
-      SpellTypeTypeIndex    spellTypeTypeIndex;
+     
 
-    
-      set<string>           spellNameList;
-      ifstream              inFile;                // istream to import data files
-      ifstream              inFile2;
+      ifstream              inFile;    
       string                tmpName; 
       string                tmpClass; 
       string                tmpLvl;
@@ -446,10 +502,10 @@ int main()
                               auto iter = spellClassNameIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    (iter2->second).getObj()->printName();
+                                    (iter2->second).getObj()->print();
                               }
                         }
-                        else { (iter2->second).getObj()->printName(); }
+                        else { (iter2->second).getObj()->print(); }
                         break;
                   }
                   case 2:
@@ -462,10 +518,10 @@ int main()
                               auto iter = spellClassClassIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    (iter2->second).getObj()->printName();
+                                    (iter2->second).getObj()->print();
                               }
                         }
-                        else { (iter2->second).getObj()->printName(); }
+                        else { (iter2->second).getObj()->print(); }
                         break;
                   }
                   case 3:
@@ -494,10 +550,10 @@ int main()
                               auto iter = spellClassLvlIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    (iter2->second).getObj()->printName();
+                                    (iter2->second).getObj()->print();
                               }
                         }
-                        else { (iter2->second).getObj()->printName(); }
+                        else { (iter2->second).getObj()->print(); }
                         break;
                   }
                   case 5:
@@ -509,10 +565,10 @@ int main()
                               auto iter = playerNameIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    (iter2->second).getObj()->printName();
+                                    (iter2->second).getObj()->print();
                               }
                         }
-                        else { (iter2->second).getObj()->printName(); }
+                        else { (iter2->second).getObj()->print(); }
                         break;
                   }
                   case 6:
@@ -524,10 +580,10 @@ int main()
                               auto iter = playerClassIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    (iter2->second).getObj()->printName();
+                                    (iter2->second).getObj()->print();
                               }
                         }
-                        else { (iter2->second).getObj()->printName(); }
+                        else { (iter2->second).getObj()->print(); }
                         break;
                   }
                   case 7:
@@ -539,10 +595,10 @@ int main()
                               auto iter = playerLvlIndex.equal_range(choice);
                               for (; iter2 != iter.second; ++iter2)
                               {
-                                    (iter2->second).getObj()->printName();
+                                    (iter2->second).getObj()->print();
                               }
                         }
-                        else { (iter2->second).getObj()->printName();; }
+                        else { (iter2->second).getObj()->print();; }
                         break;
                   }
             }
