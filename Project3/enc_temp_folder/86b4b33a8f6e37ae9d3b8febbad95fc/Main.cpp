@@ -345,7 +345,6 @@ void join(L firstTable, R secondTable)
       }
       if (match != "")
       {
-            //print whichever table is smaller
             if (firstTable.size() > secondTable.size())
             {
                   for (int i = 0; i < secondTable.size(); ++i)
