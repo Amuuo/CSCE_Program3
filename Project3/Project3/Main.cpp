@@ -31,7 +31,7 @@ class SpellClass
                   pClass = c;
                   lvl    = l;
             }
-            string       getName()  { return spName;   }
+            string       getName()  { return spName; } 
             string       getClass() { return pClass; }
             string       getLvl()   { return lvl;    }
             string*      getAttr()  { return attr;   }
@@ -45,11 +45,11 @@ class SpellClass
             void printExcept(string x)
             {
                   if (x == "SpellName")
-                        cout << "\t" << left << setw(20) << pClass << setw(20) << lvl;
+                        cout << "\t" << left << setw(10) << pClass  << "Lvl: " << lvl;
                   if (x == "Class")
-                        cout << "\t" << left << setw(20) << spName << setw(20) << lvl;
+                        cout << "\t" << left << setw(15) << spName  << "Lvl: " << lvl;
                   if (x == "Level")
-                        cout << "\t" << left << setw(20) << spName << setw(20) << pClass;
+                        cout << "\t" << left << setw(15) << spName << setw(15) << pClass;
             }
             friend bool operator< (SpellClass &left,SpellClass &right)
             {
@@ -151,8 +151,8 @@ class SpellType
             string* getAttr()  { return attr; }
             void print()
             {
-                  cout  << left << "\tSpell Name: " << setw(20) << spName;
-                  cout  << "Type Name:" << setw(15) << spType;
+                  cout  << left << "\t" << setw(8) << "Spell: "  << spName;
+                  cout  << "\n\t" << setw(8) << "Type: " << spType;
             }
             void printExcept(string x)
             {
@@ -217,7 +217,8 @@ class SpellTypeType
 class Player
 {
 private:
-      Player();
+
+            Player();
             string attr[3] = { "PlayerName", "Class", "Level" };
             string plName;
             string pClass;
@@ -325,7 +326,7 @@ class PlayerLvl
 };
 
 //-------------------------------------------------------
-
+/*
 template <class L, class R>
 void join(L firstTable, R secondTable)
 {
@@ -368,6 +369,93 @@ void join(L firstTable, R secondTable)
       else { cout << "\nThese tables have no columns in common"; }
 }
 
+template <class a, class b, class c, class d, class e, class f>
+void altJoin( a firstTableName, 
+              b firstTableClass, 
+              c fristTableLvl, 
+              d secondTableName, 
+              e secondTableClass, 
+              f secondTableLvl)
+{
+      string match = "";
+      string firstTableHeader[3];
+      string secondTableHeader[3];
+
+      //for(auto iter : firstTable)
+
+      //search for matching column headers
+      for (int i = 0; i < firstTable.at(0).getAttr()->size(); ++i)
+      {
+            for (int j = 0; j < secondTable.at(0).getAttr()->size(); ++j)
+            {
+                  if (firstTable.at(0).getAttr()[i] == secondTable.at(0).getAttr()[j])
+                  {
+                        match = firstTable.at(0).getAttr()[i];
+                  }
+            }
+      }
+}
+
+template <class a, class b, class c, class d, class e>
+void altJoin(a firstTableName,
+             b firstTableClass,
+             c fristTableLvl,
+             d secondTableName,
+             e secondTableClass)
+{
+      string match = "";
+      string firstTableHeader[3];
+      string secondTableHeader[3];
+
+      //for(auto iter : firstTable)
+
+      //search for matching column headers
+      for (int i = 0; i < firstTable.at(0).getAttr()->size(); ++i)
+      {
+            for (int j = 0; j < secondTable.at(0).getAttr()->size(); ++j)
+            {
+                  if (firstTable.at(0).getAttr()[i] == secondTable.at(0).getAttr()[j])
+                  {
+                        match = firstTable.at(0).getAttr()[i];
+                  }
+            }
+      }
+}
+
+template <class a, class b, class c, class d>
+void altJoin(a firstTableName,
+             b fristTableType,
+             c secondTableName,
+             d secondTableType)
+{
+
+}
+*/
+template <class L, class R>
+void join(L &firstTable, R &secondTable)
+{
+      for (auto iter : firstTable)
+      {
+            try
+            {
+                  int count;
+
+                  count = secondTable.count(iter.first);
+                  auto key = secondTable.find(iter.first);
+                  cout << endl << endl;
+                  iter.second.getObj()->print();
+                
+                  for (int i = 0; i < count; ++i)
+                  {                       
+                        cout << "\n\t";
+                        key->second.getObj()->printExcept("SpellName");
+                        ++key;
+                  }
+            }
+            catch (exception& e) { continue; }
+
+      }
+}
 typedef vector<Player     >                              PlayerSet;
 typedef vector<SpellClass >                              SpellClassSet;
 typedef vector<SpellType  >                              SpellTypeSet;
@@ -418,6 +506,9 @@ int main()
             Player p(tmpName, tmpClass, tmpLvl);                                    
             playerList.push_back(p);
       }
+
+      //sort vector
+      sort(playerList.begin(), playerList.end());
       //create index objects and populate the associated hash tables
       for (auto i = 0; i < playerList.size(); ++i)
       {
@@ -456,6 +547,8 @@ int main()
       }
       inFile.close();
       
+      //sort vector
+      sort(spellClassList.begin(), spellClassList.end());
       //create index objects and populate the associated hash tables
       for (auto i = 0; i < spellClassList.size(); ++i)
       {
@@ -488,7 +581,9 @@ int main()
             spellTypeList.push_back(st);
       }
       inFile.close();
-
+      
+      //sort vector
+      sort(spellTypeList.begin(), spellTypeList.end());
       //create index object and populate the associated hash tables
       for (auto i = 0; i < spellTypeList.size(); ++i)
       {
@@ -637,7 +732,7 @@ int main()
                         cout << "\nEnter 1st table: "; cin >> iChoice;
                         cout << "\nEnter table to join with " << iChoice << ": ";
                         cin >> jChoice;
-                        switch (iChoice)
+                        /*switch (iChoice)
                         {
                               case 1:
                                     switch (jChoice)
@@ -674,11 +769,84 @@ int main()
                                     }
                               default: break;
                         }
+                        switch (iChoice)
+                        {
+                        case 1:
+                              switch (jChoice)
+                              {
+                              case 1:
+                                    altJoin(spellTypeNameIndex, 
+                                            spellTypeTypeIndex,
+                                            spellTypeNameIndex,
+                                            spellTypeTypeIndex); goto end; break;
+                              case 2:
+                                    altJoin(spellTypeList, spellClassList); goto end; break;
+                              case 3:
+                                    altJoin(spellTypeList, playerList);     goto end; break;
+                              default: break;
+                              }
+                        case 2:
+                              switch (jChoice)
+                              {
+                              case 1:
+                                    altJoin(spellClassList, spellTypeList);  goto end; break;
+                              case 2:
+                                    altChoice(spellClassList, spellClassList); goto end; break;
+                              case 3:
+                                    altChoice(spellClassList, playerList);     goto end; break;
+                              default: break;
+                              }
+                        case 3:
+                              switch (jChoice)
+                              {
+                              case 1:
+                                    altJoin(playerList, spellTypeList);  goto end; break;
+                              case 2:
+                                    altJoin(playerList, spellClassList); goto end; break;
+                              case 3:
+                                    altJoin(playerList, playerList);     goto end; break;
+                              default: break;
+                              }
+                        default: break;
+                        }*/
+                        switch (iChoice)
+                        {
+                        case 1:
+                              switch (jChoice)
+                              {
+                              case 1:
+                                    join(spellTypeNameIndex, spellClassNameIndex); goto end; break;
+                              default: break;
+                              }
+                        }
                   }
             }
-            end:
+      end:
+            /*
+            for (auto iter : spellTypeNameIndex)
+            {
+                  try
+                  {
+                        int count;
+
+                        count = spellClassNameIndex.count(iter.first);
+                        auto key = spellClassNameIndex.find(iter.first);
+                        for (int i = 0; i < count; ++i)
+                        {
+                              iter.second.getObj()->print();
+                              key->second.getObj()->print();
+                              cout << endl;
+                              ++key;
+                        }
+                  }
+                  catch (exception& e) { continue; }
+
+            }*/
             cout << "\n\nAnother Search (y/n)?: "; cin >> userResponse;
       } while (userResponse == 'y');
+
+      
+
 
       return 0;
       
