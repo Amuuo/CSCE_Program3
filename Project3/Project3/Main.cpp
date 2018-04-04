@@ -11,32 +11,7 @@
 #include<iomanip>
 using namespace std;
 
-typedef vector<Player     >                              PlayerSet;
-typedef vector<SpellClass >                              SpellClassSet;
-typedef vector<SpellType  >                              SpellTypeSet;
-typedef unordered_multimap<string, SpellClassName  >     SpellClassNameIndex;
-typedef unordered_multimap<string, SpellClassClass >     SpellClassClassIndex;
-typedef unordered_multimap<string, SpellClassLvl   >     SpellClassLvlIndex;
-typedef unordered_multimap<string, SpellTypeName   >     SpellTypeNameIndex;
-typedef unordered_multimap<string, SpellTypeType   >     SpellTypeTypeIndex;
-typedef unordered_multimap<string, PlayerName      >     PlayerNameIndex;
-typedef unordered_multimap<string, PlayerClass     >     PlayerClassIndex;
-typedef unordered_multimap<string, PlayerLvl       >     PlayerLvlIndex;
 
-//------------PLAYER STUFF-------------
-PlayerSet             playerList;
-PlayerNameIndex       playerNameIndex;
-PlayerClassIndex      playerClassIndex;
-PlayerLvlIndex        playerLvlIndex;
-//------------SPELL STUFF--------------
-SpellClassSet         spellClassList;
-SpellClassNameIndex   spellClassNameIndex;
-SpellClassClassIndex  spellClassClassIndex;
-SpellClassLvlIndex    spellClassLvlIndex;
-//----------SPELL TYPE STUFF-----------
-SpellTypeSet          spellTypeList;
-SpellTypeNameIndex    spellTypeNameIndex;
-SpellTypeTypeIndex    spellTypeTypeIndex;
 
 
 //tuples from data2.txt
@@ -47,36 +22,37 @@ public:
       
             SpellClass();
             string attr[3] = { "SpellName", "Class", "Level" };
-            string  name;
-            string  sClass;
+            string  spName;
+            string  pClass;
             string  lvl;
 
       public:
 
             SpellClass(string n, string c, string l)
             {
-                  name   = n;
-                  sClass = c;
+                  spName   = n;
+                  pClass = c;
                   lvl    = l;
             }
-            string getName()  { return name;   }
-            string getClass() { return sClass; }
-            string getLvl()   { return lvl;    }
-            SpellClass* getThis() { return this; }
+            string       getName()  { return spName;   }
+            string       getClass() { return pClass; }
+            string       getLvl()   { return lvl;    }
+            string*      getAttr()  { return attr;   }
+            SpellClass*  getThis()  { return this;   }
             void print()
             {
-                  cout  << left << "\t" << setw(20) << name;
-                  cout  << "" << setw(15) << sClass;
+                  cout  << left << "\t" << setw(20) << spName;
+                  cout  << "" << setw(15) << pClass;
                   cout  << "Lvl: " << setw(10) << lvl;
             }
             void printExcept(string x)
             {
                   if (x == "SpellName")
-                        cout << "\t" << left << setw(20) << sClass << setw(20) << lvl;
+                        cout << "\t" << left << setw(20) << pClass << setw(20) << lvl;
                   if (x == "Class")
-                        cout << "\t" << left << setw(20) << name << setw(20) << lvl;
+                        cout << "\t" << left << setw(20) << spName << setw(20) << lvl;
                   if (x == "Level")
-                        cout << "\t" << left << setw(20) << name << setw(20) << sClass;
+                        cout << "\t" << left << setw(20) << spName << setw(20) << pClass;
             }
             friend bool operator< (SpellClass &left,SpellClass &right)
             {
@@ -158,29 +134,30 @@ class SpellType
 
             SpellType();
             string attr[2] = { "SpellName", "SpellType" };
-            string name;
-            string type;
+            string spName;
+            string spType;
 
       public:
 
             SpellType(string s, string t)
             {
-                  name = s;
-                  type   = t;
+                  spName = s;
+                  spType   = t;
             }
-            string getName() { return name; }
-            string getType()  { return type; }
+            string  getName()  { return spName; }
+            string  getType()  { return spType; }
+            string* getAttr()  { return attr; }
             void print()
             {
-                  cout  << left << "\tSpell Name: " << setw(20) << name;
-                  cout  << "Type Name:" << setw(20) << type;
+                  cout  << left << "\tSpell Name: " << setw(20) << spName;
+                  cout  << "Type Name:" << setw(15) << spType;
             }
             void printExcept(string x)
             {
                   if (x == "SpellName")
-                        cout << "\t" << left << setw(20) << type;
+                        cout << "\t" << left << setw(20) << spType;
                   if (x == "SpellType")
-                        cout << "\t" << left << setw(20) << name;
+                        cout << "\t" << left << setw(20) << spName;
             }
             friend bool operator< (SpellType &left, SpellType &right)
             {
@@ -238,34 +215,35 @@ private:
       Player();
             string attr[3] = { "PlayerName", "Class", "Level" };
             string plName;
-            string plClass;
-            string plMaxLvl;
+            string pClass;
+            string lvl;
 
       public:
 
             Player(string n, string c, string m)
             {
                   plName   = n;
-                  plClass  = c;
-                  plMaxLvl = m;
+                  pClass  = c;
+                  lvl = m;
             }
-            string getName()   { return plName;   }
-            string getClass()  { return plClass;  }
-            string getMaxLvl() { return plMaxLvl; }
+            string  getName()   { return plName;   }
+            string  getClass()  { return pClass;  }
+            string  getMaxLvl() { return lvl; }
+            string* getAttr()   { return attr;     }
             void print()
             {
-                  cout  << left << "\tPlayer Name:" << setw(20) << plName;
-                  cout  << "Player Class:" << setw(20) << plClass;
-                  cout  << "Player MaxLvl: " << setw(20) << plMaxLvl;
+                  cout  << left << "\t" << setw(20) << plName;
+                  cout   << setw(20) << pClass;
+                  cout   << "Lvl: " << setw(20) << lvl;
             }
             void printExcept(string x) 
             {
                   if (x == "PlayerName") 
-                        cout << "\t" << left << setw(20) << plClass << setw(20) << plMaxLvl;
+                        cout << "\t" << left << setw(20) << pClass << setw(20) << lvl;
                   if (x == "Class")
-                        cout << "\t" << left << setw(20) << plName << setw(20) << plMaxLvl;
+                        cout << "\t" << left << setw(20) << plName << setw(20) << lvl;
                   if (x == "Level")
-                        cout << "\t" << left << setw(20) << plName << setw(20) << plClass;                                    
+                        cout << "\t" << left << setw(20) << plName << setw(20) << pClass;                                    
             }
             friend bool operator< (Player &left,Player &right)
             {
@@ -340,23 +318,31 @@ class PlayerLvl
 //-------------------------------------------------------
 
 
+
+
 template <class L, class R>
 void join(L a, R b)
 {
-      string match;
+      string match = "";
+      int k = 0;
+      
       //search for matching column headers
-      for (auto i : a.attr)
+      for (int i = 0; i < a.at(0).getAttr()->size(); ++i)
       {
-            for (auto j : b.attr)
+            for (int j = 0; j < b.at(0).getAttr()->size(); ++j)
             {
-                  if (a.attr[i] == b.attr[j])
-                        match = a.attr[i];
-            }
+                  if (a.at(0).getAttr()[i] == b.at(0).getAttr()[j])
+                        match = a.at(0).getAttr()[i];
+            }     
       }
-      if (match != NULL)
+      if (match != "")
       {
-            a.printexcept(match);
-            b.print();
+            for (int i = 0; i < a.size(); ++i)
+            {
+                  cout << endl;
+                  a.at(i).printExcept(match);
+                  b.at(i).print();
+            }
       }
       else
       {
@@ -364,9 +350,36 @@ void join(L a, R b)
       }
 }
 
+
+      typedef vector<Player     >                              PlayerSet;
+      typedef vector<SpellClass >                              SpellClassSet;
+      typedef vector<SpellType  >                              SpellTypeSet;
+      typedef unordered_multimap<string, SpellClassName  >     SpellClassNameIndex;
+      typedef unordered_multimap<string, SpellClassClass >     SpellClassClassIndex;
+      typedef unordered_multimap<string, SpellClassLvl   >     SpellClassLvlIndex;
+      typedef unordered_multimap<string, SpellTypeName   >     SpellTypeNameIndex;
+      typedef unordered_multimap<string, SpellTypeType   >     SpellTypeTypeIndex;
+      typedef unordered_multimap<string, PlayerName      >     PlayerNameIndex;
+      typedef unordered_multimap<string, PlayerClass     >     PlayerClassIndex;
+      typedef unordered_multimap<string, PlayerLvl       >     PlayerLvlIndex;
+
 int main()
 {
-     
+
+      //------------PLAYER STUFF-------------
+      PlayerSet             playerList;
+      PlayerNameIndex       playerNameIndex;
+      PlayerClassIndex      playerClassIndex;
+      PlayerLvlIndex        playerLvlIndex;
+      //------------SPELL STUFF--------------
+      SpellClassSet         spellClassList;
+      SpellClassNameIndex   spellClassNameIndex;
+      SpellClassClassIndex  spellClassClassIndex;
+      SpellClassLvlIndex    spellClassLvlIndex;
+      //----------SPELL TYPE STUFF-----------
+      SpellTypeSet          spellTypeList;
+      SpellTypeNameIndex    spellTypeNameIndex;
+      SpellTypeTypeIndex    spellTypeTypeIndex;
 
       ifstream              inFile;    
       string                tmpName; 
@@ -488,6 +501,7 @@ int main()
             cout << "5 - Search Player by Name\n";
             cout << "6 - Search Player by Class\n";
             cout << "7 - Search Player by Max Level\n";
+            cout << "8 - Join Tables\n";
             cout << "\nEnter 1-7: "; cin >> menuChoice;
 
             switch (menuChoice)
@@ -601,7 +615,57 @@ int main()
                         else { (iter2->second).getObj()->print();; }
                         break;
                   }
+                  //option for join operation
+                  case 8:
+                  {
+                        int iChoice, jChoice;
+                        cout << "1 - Spell Type Info\n";
+                        cout << "2 - Spell Class Info\n";
+                        cout << "3 - Player Info\n";
+
+                        cout << "\nEnter 1st table: "; cin >> iChoice;
+                        cout << "\nEnter table to join with " << iChoice << ": ";
+                        cin >> jChoice;
+                        switch (iChoice)
+                        {
+                              case 1:
+                                    switch (jChoice)
+                                    {
+                                          case 1:
+                                                join(spellTypeList, spellClassList); goto end; break;
+                                          case 2:
+                                                join(spellTypeList, spellClassList); goto end; break;
+                                          case 3:
+                                                join(spellTypeList, playerList); goto end; break;
+                                          default: break;
+                                    }
+                              case 2:
+                                    switch (jChoice)
+                                    {
+                                          case 1:
+                                                join(spellClassList, spellTypeList); goto end; break;
+                                          case 2:
+                                                join(spellClassList, spellClassList); goto end; break;
+                                          case 3:
+                                                join(spellClassList, playerList); goto end; break;
+                                          default: break;
+                                    }
+                              case 3:
+                                    switch (jChoice)
+                                    {
+                                          case 1:
+                                                join(playerList, spellTypeList); goto end; break;
+                                          case 2:
+                                                join(playerList, spellClassList); goto end; break;
+                                          case 3:
+                                                join(playerList, playerList); goto end; break;
+                                          default: break;
+                                    }
+                              default: break;
+                        }
+                  }
             }
+            end:
             cout << "\n\nAnother Search (y/n)?: "; cin >> userResponse;
       } while (userResponse == 'y');
 
