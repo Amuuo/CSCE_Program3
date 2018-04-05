@@ -385,7 +385,7 @@ typedef unordered_multimap<string, PlayerLvl       >     PlayerLvlIndex;
 
 pair<SpellTypeNameIndex, SpellTypeTypeIndex> createSpellTypeIndex(vector<SpellType> &tmpVec);
 tuple<PlayerNameIndex, PlayerClassIndex, PlayerLvlIndex> createPlayerIndex(vector<Player> &tmpVec);
-tuple<SpellClassNameIndex, PlayerClassIndex, PlayerLvlIndex> createSpellClassIndex(vector<SpellClassSet> &tmpVec);
+tuple<SpellClassNameIndex, SpellClassClassIndex, SpellClassLvlIndex> createSpellClassIndex(vector<SpellClass> &tmpVec);
 
 int main()
 {
@@ -427,7 +427,7 @@ int main()
       }      
       inFile.close();
 
-      //create Index for each attribute in Player table
+      //create index for each attribute in Player table
       //unpack tuple into the three Index hashtables
       tie(playerNameIndex, playerClassIndex, playerLvlIndex) = createPlayerIndex(playerList);
 
@@ -453,19 +453,9 @@ int main()
       }
       inFile.close();
       
-      //sort vector
-      sort(spellClassList.begin(), spellClassList.end());
-      //create index objects and populate the associated hash tables
-      for (auto i = 0; i < spellClassList.size()-1; ++i)
-      {
-            SpellClassName   tmpSp (spellClassList [i]. getName(),  &spellClassList[i]);
-            SpellClassClass  tmpC  (spellClassList [i]. getClass(), &spellClassList[i]);
-            SpellClassLvl    tmpL  (spellClassList [i]. getLvl(),   &spellClassList[i]);
-
-            spellClassNameIndex  .insert(make_pair(spellClassList[i].getName(),  tmpSp));
-            spellClassClassIndex .insert(make_pair(spellClassList[i].getClass(), tmpC));
-            spellClassLvlIndex   .insert(make_pair(spellClassList[i].getLvl(),   tmpL)); 
-      }
+      //create index for each attribute in spell class table
+      //unpack tuple into the three index hashtables
+      tie(spellClassNameIndex, spellClassClassIndex, spellClassLvlIndex) = createSpellClassIndex(spellClassList);
 
       //import spell types, which inclues spell name and spell type
       inFile.open("data3.txt");
@@ -488,17 +478,9 @@ int main()
       }
       inFile.close();
       
-      //sort vector
-      sort(spellTypeList.begin(), spellTypeList.end());
-      //create index object and populate the associated hash tables
-      for (auto i = 0; i < spellTypeList.size()-1; ++i)
-      {
-            SpellTypeName  tmpTn (spellTypeList[i].getName(),&spellTypeList[i]);
-            SpellTypeType  tmpTT (spellTypeList[i].getType(),&spellTypeList[i]);
-
-            spellTypeNameIndex.insert(make_pair(spellTypeList[i].getName(), tmpTn));
-            spellTypeTypeIndex.insert(make_pair(spellTypeList[i].getType(), tmpTT));
-      }
+      //create index for each attribute in spell type table
+      //unpack tuple into the three index hashtables
+      tie(spellTypeNameIndex, spellTypeTypeIndex) = createSpellTypeIndex(spellTypeList);
 
       char userResponse;
       // MAIN MENU
@@ -566,35 +548,67 @@ int main()
       return 0;
 }
 
-/*pair<SpellTypeNameIndex, SpellTypeTypeIndex> createSpellTypeIndex(vector<SpellType> &tmpVec)
+pair<SpellTypeNameIndex, SpellTypeTypeIndex> createSpellTypeIndex(vector<SpellType> &tmpVec)
 {
+      SpellTypeNameIndex tmpName;
+      SpellTypeTypeIndex tmpType;
+      //sort vector
+      sort(tmpVec.begin(), tmpVec.end());
+      //create index object and populate the associated hash tables
+      for (auto i = 0; i < tmpVec.size() - 1; ++i)
+      {
+            SpellTypeName  tmpTn(tmpVec[i].getName(), &tmpVec[i]);
+            SpellTypeType  tmpTT(tmpVec[i].getType(), &tmpVec[i]);
 
-}*/
+            tmpName.insert(make_pair(tmpVec[i].getName(), tmpTn));
+            tmpType.insert(make_pair(tmpVec[i].getType(), tmpTT));
+      }
+      return make_pair(tmpName, tmpType);
+}
+
 tuple<PlayerNameIndex, PlayerClassIndex, PlayerLvlIndex> createPlayerIndex(vector<Player> &tmpVec)
 {
       PlayerNameIndex  tmpName;
       PlayerClassIndex tmpClass;
       PlayerLvlIndex   tmpLvl;
-
+      //sort vector
       sort(tmpVec.begin(), tmpVec.end());
       //create index objects and populate the associated hash tables
       //hash key is the string name, class, or level
       for (auto i = 0; i < tmpVec.size() - 1; ++i)
       {
-            PlayerName   tmpP(tmpVec[i].getName(), &tmpVec[i]);
-            PlayerClass  tmpCl(tmpVec[i].getClass(), &tmpVec[i]);
+            PlayerName   tmpP (tmpVec[i].getName(),   &tmpVec[i]);
+            PlayerClass  tmpCl(tmpVec[i].getClass(),  &tmpVec[i]);
             PlayerLvl    tmpLv(tmpVec[i].getMaxLvl(), &tmpVec[i]);
 
-            tmpName.insert(make_pair(tmpVec[i].getName(), tmpP));
-            tmpClass.insert(make_pair(tmpVec[i].getClass(), tmpCl));
-            tmpLvl.insert(make_pair(tmpVec[i].getMaxLvl(), tmpLv));
+            tmpName  .insert(make_pair(tmpVec[i].getName(),   tmpP));
+            tmpClass .insert(make_pair(tmpVec[i].getClass(),  tmpCl));
+            tmpLvl   .insert(make_pair(tmpVec[i].getMaxLvl(), tmpLv));
       }
       return make_tuple(tmpName, tmpClass, tmpLvl);
 }
-/*tuple<SpellClassNameIndex, PlayerClassIndex, PlayerLvlIndex> createSpellClassIndex(vector<SpellClassSet> &tmpVec)
-{
 
-}*/
+tuple<SpellClassNameIndex, SpellClassClassIndex, SpellClassLvlIndex> createSpellClassIndex(vector<SpellClass> &tmpVec)
+{
+      SpellClassNameIndex  tmpName;
+      SpellClassClassIndex tmpClass;
+      SpellClassLvlIndex   tmpLvl;
+      //sort vector
+      sort(tmpVec.begin(), tmpVec.end());
+      //create index objects and populate the associated hash tables
+      for (auto i = 0; i < tmpVec.size() - 1; ++i)
+      {
+            SpellClassName   tmpSp(tmpVec[i].getName(),  &tmpVec[i]);
+            SpellClassClass  tmpC (tmpVec[i].getClass(), &tmpVec[i]);
+            SpellClassLvl    tmpL (tmpVec[i].getLvl(),   &tmpVec[i]);
+
+            tmpName  .insert(make_pair(tmpVec[i].getName(),  tmpSp));
+            tmpClass .insert(make_pair(tmpVec[i].getClass(), tmpC));
+            tmpLvl   .insert(make_pair(tmpVec[i].getLvl(),   tmpL));
+      }
+      return make_tuple(tmpName, tmpClass, tmpLvl);
+
+}
 
 //selection function 
 template <typename L, typename R, typename D>
