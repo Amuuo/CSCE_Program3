@@ -410,8 +410,13 @@ int main()
       string                tmpName; 
       string                tmpClass; 
       string                tmpLvl;
+      vector<string>        fileNames;
 
-      inFile.open("data1.txt");
+      fileNames.push_back("data1.txt");
+      fileNames.push_back("data2.txt");
+      fileNames.push_back("data3.txt");
+
+      inFile.open(fileNames[0]);
       if (inFile.fail())
       {
             cout << "File failed to open. Exiting program...";
@@ -434,7 +439,7 @@ int main()
       tie(playerNameIndex, playerClassIndex, playerLvlIndex) = createPlayerIndex(playerList);
 
       //import spell info, containing spell names, class, and level
-      inFile.open("data2.txt");
+      inFile.open(fileNames[1]);
       if (inFile.fail())
       {
             cout << "File failed to open, exiting program\n";
@@ -460,7 +465,7 @@ int main()
       tie(spellClassNameIndex, spellClassClassIndex, spellClassLvlIndex) = createSpellClassIndex(spellClassList);
 
       //import spell types, which inclues spell name and spell type
-      inFile.open("data3.txt");
+      inFile.open(fileNames[2]);
       if (inFile.fail())
       {
             cout << "File failed to open, exiting program\n";
@@ -493,9 +498,9 @@ int main()
             cout << "\n\t============================";
             cout << "\n\tDUNGEONS & DRAGONS REFERENCE";
             cout << "\n\t============================";
-            cout << "\n1 - Selection (also works as search)";
-            cout << "\n2 - Project";
-            cout << "\n3 - Join\n";
+            cout << "\n\t1 - Selection (also works as search)";
+            cout << "\n\t2 - Projection";
+            cout << "\n\t3 - Join\n";
 
             cout << "\nSelect(1-3): "; cin >> menuChoice;
 
@@ -506,9 +511,9 @@ int main()
                   {
                         int iChoice;
                         
-                        cout << "\n1 - Spell Type Info\n";
-                        cout << "2 - Spell Class Info\n";
-                        cout << "3 - Player Info\n";
+                        cout << "\n\t1 - Spell Type Info";
+                        cout << "\n\t2 - Spell Class Info";
+                        cout << "\n\t3 - Player Info\n";
                         cout << "\nEnter table to select from: "; cin >> iChoice;                       
                         
                         if(iChoice == 1) select(spellTypeList, spellTypeNameIndex, spellTypeTypeIndex);
@@ -524,18 +529,18 @@ int main()
                         int    choice2;
                         string choice3;
                         
-                        cout << "\n1 - Spell Type Info\n";
-                        cout << "2 - Spell Class Info\n";
-                        cout << "3 - Player Info\n";
+                        cout << "\n\t1 - Spell Type Info";
+                        cout << "\n\t2 - Spell Class Info";
+                        cout << "\n\t3 - Player Info\n";
                         
                         cout << "\nChoose Table: "; cin >> choice1;
                         
                         if (choice1 == 1)
                         {
-                              cout << "\n1 - Spell Name";
-                              cout << "\n2 - Spell Type";
+                              cout << "\n\t1 - Spell Name";
+                              cout << "\n\t2 - Spell Type";
 
-                              cout << "\n\nEnter attribute to project: "; cin >> choice2;
+                              cout << "\n\n\tEnter attribute to project: "; cin >> choice2;
                               if (choice2 == 1) choice3 = "SpellName";
                               else if (choice2 == 2) choice3 = "SpellType";
 
@@ -545,10 +550,10 @@ int main()
                         }
                         if (choice1 == 2)
                         {
-                              cout << "\n1 - SpellName";
-                              cout << "\n2 - Class";
-                              cout << "\n3 - Level";
-                              cout << "\n\nEnter attribute to project: "; cin >> choice2;
+                              cout << "\n\t1 - SpellName";
+                              cout << "\n\t2 - Class";
+                              cout << "\n\t3 - Level";
+                              cout << "\n\n\tEnter attribute to project: "; cin >> choice2;
                               if (choice2 == 1) choice3 = "SpellName";
                               else if (choice2 == 2) choice3 = "Class";
                               else if (choice2 == 3) choice3 = "Level";
@@ -559,16 +564,16 @@ int main()
                         }
                         if (choice1 == 3)
                         {
-                              cout << "\n1 - Player Name";
-                              cout << "\n2 - Player Class";
-                              cout << "\n3 - Player Level";
-                              cout << "\n\nEnter attribute to project: "; cin >> choice2;
+                              cout << "\n\t1 - Player Name";
+                              cout << "\n\t2 - Player Class";
+                              cout << "\n\t3 - Player Level";
+                              cout << "\n\n\tEnter attribute to project: "; cin >> choice2;
                               
                               if (choice2 == 1) choice3 = "PlayerName";
                               else if (choice2 == 2) choice3 = "Class";
                               else if (choice2 == 3) choice3 = "Level";
 
-                              else cout << "\nNot a valid option!";                            
+                              else cout << "\n\tNot a valid option!";                            
                               
                               projection(playerList, choice3);
                         }
@@ -580,34 +585,34 @@ int main()
                   {
                         int iChoice, jChoice;
 
-                        cout << "1 - Spell Type Info\n";
-                        cout << "2 - Spell Class Info\n";
-                        cout << "3 - Player Info\n";
+                        cout << "\n\t1 - Spell Type Info";
+                        cout << "\n\t2 - Spell Class Info";
+                        cout << "\n\t3 - Player Info\n";
 
-                        cout << "\nEnter 1st table: "; cin >> iChoice;
-                        cout << "\nEnter table to join with " << iChoice << ": ";
+                        cout << "\n\tEnter 1st table: "; cin >> iChoice;
+                        cout << "\n\tEnter table to join with " << iChoice << ": ";
                         cin >> jChoice;
                         if (iChoice == 1)
                         {
-                              if (jChoice == 1) cout << "\nThat's the same table!"; break;
+                              if (jChoice == 1) cout << "\n\tThat's the same table!"; break;
                               if (jChoice == 2) { join(spellTypeNameIndex, spellClassNameIndex); break; }
                               if (jChoice == 3) { join(spellTypeNameIndex, playerNameIndex); break; }
                         }
                         if (iChoice == 2)
                         {
                               if (jChoice == 1) { join(spellClassNameIndex, spellTypeNameIndex);  break; }
-                              if (jChoice == 2) cout << "\nThat's the same table!"; break;
+                              if (jChoice == 2) cout << "\n\tThat's the same table!"; break;
                               if (jChoice == 3) { join(spellClassClassIndex, playerClassIndex); break; }
                         }
                         if (jChoice == 3)
                         {
                               if (jChoice == 1) { join(playerNameIndex, spellTypeNameIndex); break; }
                               if (jChoice == 2) { join(playerClassIndex, spellClassClassIndex); break; }
-                              if (jChoice == 3) cout << "\nThat's the same table!";
+                              if (jChoice == 3) cout << "\n\tThat's the same table!";
                         }
                   }
             }
-            cout << "\n\nAnother Search (y/n)?: "; cin >> userResponse;
+            cout << "\n\n\tAnother Search (y/n)?: "; cin >> userResponse;
       } while (userResponse == 'y');
 
       return 0;
@@ -871,6 +876,7 @@ void projection(L &table, S column)
 {
       set<S> stringSet;
       char   response;
+      vector<string> newTable;
 
       //ask if user wants duplicate entries in there projection
       cout << "\nPrint without duplicates? (y/n): "; cin >> response;
@@ -879,9 +885,12 @@ void projection(L &table, S column)
       if (response == 'y' || response == 'Y')
       {
             cout << endl;
-            for (auto iter : table) { stringSet.insert(iter.printName(column)); }
+            for (auto iter : table) 
+            { 
+                  stringSet.insert(iter.printName(column)); 
+                  newTable.push_back(iter.printName(column));
+            }
             for (auto iter : stringSet) { cout << iter << endl; }
-            return;
       }
       //print with duplicates
       else if (response == 'n' || response == 'N')
@@ -891,9 +900,24 @@ void projection(L &table, S column)
             {
                   cout << endl;
                   cout << iter.printName(column);
-            } return;
+            }
       }
       else { cout << "\nInvalid input."; return; }
+      //output file to do more operations
+      cout << "\n\nDo you want to save this table for further operations?(y/n): "; 
+      cin >> response;
+      if (response == 'y' || response == 'Y')
+      {
+            ofstream tmp;
+            tmp.open("newTable" + column + ".txt");
+            for (int i = 0; i < newTable.size(); ++i)
+            {
+                  tmp << newTable[i] << endl;
+            }
+            tmp.close();
+            cout << "\n\tFile saved.";
+      }
+      return;
 }
 //join function
 template <typename L, typename R>
@@ -911,8 +935,8 @@ void join(L &firstTable, R &secondTable)
                   {
                         if (iter.second.getObj()->getAttr()[i] == iter2.second.getObj()->getAttr()[i])
                         {
-                              firstTableSize   = iter.second.getObj()->getAttr().size();
-                              secondTableSize  = iter2.second.getObj()->getAttr().size();
+                              //firstTableSize   = iter.second.getObj()->getAttr().size();
+                              //secondTableSize  = iter2.second.getObj()->getAttr().size();
                               overlap          = iter.second.getObj()->getAttr()[i];
                               break;
                         }
@@ -939,11 +963,5 @@ void join(L &firstTable, R &secondTable)
             }
             catch (exception& e) { continue; }
       }
-}
-
-template <typename A, typename B, typename C>
-void join(A &firstTable, B &secondTable, C &thridTable)
-{
-
 }
 
