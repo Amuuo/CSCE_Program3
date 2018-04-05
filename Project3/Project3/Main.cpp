@@ -20,6 +20,7 @@ class SpellClass
       
             SpellClass();
             array<string, 3>  attr = { "SpellName", "Class", "Level" };
+            string            objName = "SpellClass";
             string            spName;
             string            pClass;
             string            lvl;
@@ -145,6 +146,7 @@ class SpellType
 
             SpellType();
             array<string, 2> attr = { "SpellName", "SpellType" };
+            string objName = "SpellType";
             string spName;
             string spType;
 
@@ -236,6 +238,7 @@ private:
 
             Player();
             array<string, 3> attr = { "PlayerName", "Class", "Level" };
+            string objName = "Player";
             string plName;
             string pClass;
             string lvl;
@@ -351,7 +354,7 @@ class PlayerLvl
 
 //template for join
 template <typename L, typename R>
-void join12(L &firstTable, R &secondTable);
+void join(L &firstTable, R &secondTable);
 
 //template function for Project
 template <typename L, typename S>
@@ -366,6 +369,7 @@ template <typename L, typename R, typename D>
 void select(L &table, R &nameIndex, D &typeIndex);
 
 
+
 typedef vector<Player     >                              PlayerSet;
 typedef vector<SpellClass >                              SpellClassSet;
 typedef vector<SpellType  >                              SpellTypeSet;
@@ -377,6 +381,11 @@ typedef unordered_multimap<string, SpellTypeType   >     SpellTypeTypeIndex;
 typedef unordered_multimap<string, PlayerName      >     PlayerNameIndex;
 typedef unordered_multimap<string, PlayerClass     >     PlayerClassIndex;
 typedef unordered_multimap<string, PlayerLvl       >     PlayerLvlIndex;
+
+
+pair<SpellTypeNameIndex, SpellTypeTypeIndex> createSpellTypeIndex(vector<SpellType> &tmpVec);
+tuple<PlayerNameIndex, PlayerClassIndex, PlayerLvlIndex> createPlayerIndex(vector<Player> &tmpVec);
+tuple<SpellClassNameIndex, PlayerClassIndex, PlayerLvlIndex> createSpellClassIndex(vector<SpellClassSet> &tmpVec);
 
 int main()
 {
@@ -415,24 +424,12 @@ int main()
             
             Player p(tmpName, tmpClass, tmpLvl);                                    
             playerList.push_back(p);
-      }
-
-      //sort vector
-      sort(playerList.begin(), playerList.end());
-      //create index objects and populate the associated hash tables
-      //hash key is the string name, class, or level
-      for (auto i = 0; i < playerList.size()-1; ++i)
-      {
-            PlayerName   tmpP  (playerList[i].getName  (), &playerList[i]);
-            PlayerClass  tmpCl (playerList[i].getClass (), &playerList[i]);
-            PlayerLvl    tmpLv (playerList[i].getMaxLvl(), &playerList[i]);
-             
-            playerNameIndex.insert  (make_pair(playerList[i].getName(),   tmpP  ));  
-            playerClassIndex.insert (make_pair(playerList[i].getClass(),  tmpCl )); 
-            playerLvlIndex.insert   (make_pair(playerList[i].getMaxLvl(), tmpLv )); 
-      }
+      }      
       inFile.close();
 
+      //create Index for each attribute in Player table
+      //unpack tuple into the three Index hashtables
+      tie(playerNameIndex, playerClassIndex, playerLvlIndex) = createPlayerIndex(playerList);
 
       //import spell info, containing spell names, class, and level
       inFile.open("data2.txt");
@@ -509,7 +506,7 @@ int main()
       {
             string choice;
             int    menuChoice;
-            cout << "1 - Select\n";
+            cout << "\n1 - Selection (also works as search)\n";
             cout << "2 - Project\n";
             cout << "3 - Join\n";
 
@@ -528,7 +525,7 @@ int main()
                         
                         if(iChoice == 1) select(spellTypeList, spellTypeNameIndex, spellTypeTypeIndex);
                         if(iChoice == 2) select(spellClassList, spellClassNameIndex, spellClassClassIndex, spellClassLvlIndex);
-                        if(iChoice == 3)select(playerList, playerNameIndex, playerClassIndex, playerLvlIndex);
+                        if(iChoice == 3) select(playerList, playerNameIndex, playerClassIndex, playerLvlIndex);
 
                         break;
                   }
@@ -549,7 +546,7 @@ int main()
                               
                               else cout << "\nNot a valid option!";
                         }
-                        projection(spellClassList, choice3); break;
+                        //projection(spellClassList, choice3); break;
                   }
                   case 3:
                   {
@@ -568,6 +565,37 @@ int main()
 
       return 0;
 }
+
+/*pair<SpellTypeNameIndex, SpellTypeTypeIndex> createSpellTypeIndex(vector<SpellType> &tmpVec)
+{
+
+}*/
+tuple<PlayerNameIndex, PlayerClassIndex, PlayerLvlIndex> createPlayerIndex(vector<Player> &tmpVec)
+{
+      PlayerNameIndex  tmpName;
+      PlayerClassIndex tmpClass;
+      PlayerLvlIndex   tmpLvl;
+
+      sort(tmpVec.begin(), tmpVec.end());
+      //create index objects and populate the associated hash tables
+      //hash key is the string name, class, or level
+      for (auto i = 0; i < tmpVec.size() - 1; ++i)
+      {
+            PlayerName   tmpP(tmpVec[i].getName(), &tmpVec[i]);
+            PlayerClass  tmpCl(tmpVec[i].getClass(), &tmpVec[i]);
+            PlayerLvl    tmpLv(tmpVec[i].getMaxLvl(), &tmpVec[i]);
+
+            tmpName.insert(make_pair(tmpVec[i].getName(), tmpP));
+            tmpClass.insert(make_pair(tmpVec[i].getClass(), tmpCl));
+            tmpLvl.insert(make_pair(tmpVec[i].getMaxLvl(), tmpLv));
+      }
+      return make_tuple(tmpName, tmpClass, tmpLvl);
+}
+/*tuple<SpellClassNameIndex, PlayerClassIndex, PlayerLvlIndex> createSpellClassIndex(vector<SpellClassSet> &tmpVec)
+{
+
+}*/
+
 //selection function 
 template <typename L, typename R, typename D>
 void select(L &table, R &nameIndex, D &typeIndex)
@@ -790,9 +818,11 @@ void projection(L &table, S &column)
 }
 //join function
 template <typename L, typename R>
-void join12(L &firstTable, R &secondTable)
+void join(L &firstTable, R &secondTable)
 {
       string overlap;
+      int    firstTableSize;
+      int    secondTableSize;
       //search for overlapping columns (only search first object of first and second Table)
       for (auto iter : firstTable)
       {
@@ -802,7 +832,9 @@ void join12(L &firstTable, R &secondTable)
                   {
                         if (iter.second.getObj()->getAttr()[i] == iter2.second.getObj()->getAttr()[i])
                         {
-                              overlap = iter.second.getObj()->getAttr()[i];
+                              firstTableSize   = iter.second.getObj()->getAttr().size();
+                              secondTableSize  = iter2.second.getObj()->getAttr().size();
+                              overlap          = iter.second.getObj()->getAttr()[i];
                               break;
                         }
                   } break;
@@ -828,5 +860,11 @@ void join12(L &firstTable, R &secondTable)
             }
             catch (exception& e) { continue; }
       }
+}
+
+template <typename A, typename B, typename C>
+void join(A &firstTable, B &secondTable, C &thridTable)
+{
+
 }
 
