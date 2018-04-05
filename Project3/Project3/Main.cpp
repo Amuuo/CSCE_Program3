@@ -170,6 +170,13 @@ class SpellType
                   if (x == "SpellType")
                         cout << "\t" << left << setw(20) << spName;
             }
+            string printName(string x)
+            {
+                  if (x == "SpellName") { return spName; }
+                  if (x == "Class") { return spType; }
+
+                  return "\nInvalid Input for SpellType::printName";
+            }
             friend bool operator< (SpellType &left, SpellType &right)
             {
                   if (left.getName()[0] < right.getName()[0]) return true;
@@ -259,6 +266,14 @@ private:
                         cout << "\t" << left << setw(20) << plName << setw(20) << lvl;
                   if (x == "Level")
                         cout << "\t" << left << setw(20) << plName << setw(20) << pClass;                                    
+            }
+            string printName(string x)
+            {
+                  if (x == "SpellName") { return plName; }
+                  if (x == "Class") { return pClass; }
+                  if (x == "Level") { return lvl; }
+
+                  return "\nInvalid Input for Player::printName";
             }
             friend bool operator< (Player &left,Player &right)
             {
@@ -384,16 +399,35 @@ template <typename L, typename S>
 void projection(L &table, S &column)
 {
       set<S> stringSet;
-      for (auto iter : table)
+      char   response;
+
+      //ask if user wants duplicate entries in there projection
+      cout << "\nPrint without duplicates? (y/n): "; cin >> response;
+
+      //print without duplicates
+      if (response == 'y' || response == 'Y')
       {
-            //cout << endl;
-            stringSet.insert(iter.printName(column));
+            cout << endl;
+            for (auto iter : table)     { stringSet.insert(iter.printName(column)); }
+            for (auto iter : stringSet) { cout << iter << endl; }
+            return;
       }
-      for (auto iter : stringSet)
+      //print with duplicates
+      else if (response == 'n' || response == 'N')
       {
-            cout << iter << endl;
+            cout << endl;
+            for (auto iter : table) 
+            { 
+                  cout << endl;
+                  cout << iter.printName(column);
+            }
+            return;
       }
-      return;
+      else
+      {
+            cout << "\nInvalid input.";
+            return;
+      }
 }
 
 template <typename L, typename R, typename D, typename F>
@@ -414,12 +448,11 @@ void select(L &table, R &nameIndex, D &classIndex, F &lvlIndex)
       cout << "\nEnter what attribute to select for: "; cin >> response;
       switch (response)
       {
-
             case 1:
             {
                   vector<string> values;
                   string tmp;
-                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+                  cout << "\nEnter specific values separated by a space (followed by a 'c' to continue): ";
                   cin >> tmp;
                   while (tmp != "c")
                   {
@@ -450,7 +483,7 @@ void select(L &table, R &nameIndex, D &classIndex, F &lvlIndex)
             {
                   vector<string> values;
                   string tmp;
-                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+                  cout << "\nEnter specific values separated by a space (followed by a 'c' to continue): ";
                   cin >> tmp;
                   while (tmp != "c")
                   {
@@ -484,7 +517,7 @@ void select(L &table, R &nameIndex, D &classIndex, F &lvlIndex)
                   cout << "\n\t1 - >=";
                   cout << "\n\t2 - <=";
                   cout << "\n\t3 - ==";
-                  cout << "\nEnter operation: "; cin >> choice2;
+                  cout << "\n\nEnter operation (1-3): "; cin >> choice2;
                   cout << "\nEnter Level: "; cin >> lvl;
                   if (choice2 == 1)
                   {
@@ -527,88 +560,8 @@ void select(L &table, R &nameIndex, D &classIndex, F &lvlIndex)
 }
 
 template <typename L, typename R, typename D>
-void select(L &table, R &nameIndex, D &typeIndex)
-{
-      int response;
-      vector<string> choices;
-      for (auto iter : table)
-      {
-            cout << endl;
-            for (int i = 0; i < iter.getAttr().size(); ++i)
-            {
-                  cout << i + 1 << " - " << iter.getAttr()[i] << endl;
-                  choices.push_back(iter.getAttr()[i]);
-            }
-            break;
-      }
-      cout << "\nEnter what attribute to select for: "; cin >> response;
-      switch (response)
-      {
+void select(L &table, R &nameIndex, D &typeIndex);
 
-            case 1:
-            {
-                  vector<string> values;
-                  string tmp;
-                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
-                  cin >> tmp;
-                  while (tmp != "c")
-                  {
-                        values.push_back(tmp);
-                        cin >> tmp;
-                  }
-                  if (values.size() == 0)
-                  {
-                        for (auto iter : table)
-                        {
-                              iter.print();
-                        }
-                        return;
-                  }
-                  for (int i = 0; i < values.size(); ++i)
-                  {
-                        auto iter = nameIndex.find(values[i]);
-                        for (int j = 0; j < nameIndex.count(values[i]); ++j)
-                        {
-                              cout << endl;
-                              iter->second.getObj()->print();
-                              ++iter;
-                        }
-                  }
-                  break;
-            }
-            case 2:
-            {
-                  vector<string> values;
-                  string tmp;
-                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
-                  cin >> tmp;
-                  while (tmp != "c")
-                  {
-                        values.push_back(tmp);
-                        cin >> tmp;
-                  }
-                  if (values.size() == 0)
-                  {
-                        for (auto iter : table)
-                        {
-                              iter.print();
-                        }
-                        return;
-                  }
-                  for (int i = 0; i < values.size(); ++i)
-                  {
-                        auto iter = typeIndex.find(values[i]);
-                        for (int j = 0; j < typeIndex.count(values[i]); ++j)
-                        {
-                              cout << endl;
-                              iter->second.getObj()->print();
-                              ++iter;
-                        }
-                  }
-                  break;
-            }
-      }
-}
 
 
 
@@ -765,7 +718,7 @@ int main()
             cout << "6 - Search Player by Class\n";
             cout << "7 - Search Player by Max Level\n";
             cout << "8 - Join Tables\n";
-            cout << "\nEnter 1-7: "; cin >> menuChoice;
+            cout << "\nEnter 1-8: "; cin >> menuChoice;
 
             switch (menuChoice)
             {
@@ -991,7 +944,7 @@ int main()
                               }
                               case 3: if (jChoice == 1) select(spellTypeList, spellTypeNameIndex, spellTypeTypeIndex);
                                       if (jChoice == 2) select(spellClassList, spellClassNameIndex, spellClassClassIndex, spellClassLvlIndex);
-                                      if (j1Choice == 3) select(playerList, playerNameIndex, playerClassIndex, playerLvlIndex);
+                                      if (jChoice == 3) select(playerList, playerNameIndex, playerClassIndex, playerLvlIndex);
                                       break;
                               default: break;
                               }
@@ -1024,4 +977,87 @@ int main()
 
       return 0;
       
+}
+
+template <typename L, typename R, typename D>
+void select(L &table, R &nameIndex, D &typeIndex)
+{
+      int response;
+      vector<string> choices;
+      for (auto iter : table)
+      {
+            cout << endl;
+            for (int i = 0; i < iter.getAttr().size(); ++i)
+            {
+                  cout << i + 1 << " - " << iter.getAttr()[i] << endl;
+                  choices.push_back(iter.getAttr()[i]);
+            }
+            break;
+      }
+      cout << "\nEnter what attribute to select for: "; cin >> response;
+      switch (response)
+      {
+      case 1:
+      {
+            vector<string> values;
+            string tmp;
+            cout << "\nEnter specific values separated by a space (followed by a 'c' to continue): ";
+            cin >> tmp;
+            while (tmp != "c")
+            {
+                  values.push_back(tmp);
+                  cin >> tmp;
+            }
+            if (values.size() == 0)
+            {
+                  for (auto iter : table)
+                  {
+                        iter.print();
+                  }
+                  return;
+            }
+            for (int i = 0; i < values.size(); ++i)
+            {
+                  auto iter = nameIndex.find(values[i]);
+                  for (int j = 0; j < nameIndex.count(values[i]); ++j)
+                  {
+                        cout << endl;
+                        iter->second.getObj()->print();
+                        ++iter;
+                  }
+            }
+            break;
+      }
+      case 2:
+      {
+            vector<string> values;
+            string tmp;
+            cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+            cin >> tmp;
+            while (tmp != "c")
+            {
+                  values.push_back(tmp);
+                  cin >> tmp;
+            }
+            if (values.size() == 0)
+            {
+                  for (auto iter : table)
+                  {
+                        iter.print();
+                  }
+                  return;
+            }
+            for (int i = 0; i < values.size(); ++i)
+            {
+                  auto iter = typeIndex.find(values[i]);
+                  for (int j = 0; j < typeIndex.count(values[i]); ++j)
+                  {
+                        cout << endl;
+                        iter->second.getObj()->print();
+                        ++iter;
+                  }
+            }
+            break;
+      }
+      }
 }
