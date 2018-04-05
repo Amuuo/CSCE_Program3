@@ -19,18 +19,18 @@ class SpellClass
       private:
       
             SpellClass();
-            array<string, 3> attr = { "SpellName", "Class", "Level" };
-            string  spName;
-            string  pClass;
-            string  lvl;
+            array<string, 3>  attr = { "SpellName", "Class", "Level" };
+            string            spName;
+            string            pClass;
+            string            lvl;
 
       public:
 
             SpellClass(string n, string c, string l)
             {
-                  spName   = n;
-                  pClass = c;
-                  lvl    = l;
+                  spName  = n;
+                  pClass  = c;
+                  lvl     = l;
             }
             string           getName()  { return spName; } 
             string           getClass() { return pClass; }
@@ -54,18 +54,10 @@ class SpellClass
             }
             string printName(string x)
             {
-                  if (x == "SpellName")
-                  {
-                        return spName;
-                  }
-                  if (x == "Class")
-                  {
-                        return pClass;
-                  }
-                  if (x == "Level");
-                  {
-                        return lvl;
-                  }
+                  if (x == "SpellName") { return spName; }
+                  if (x == "Class"    ) { return pClass; }
+                  if (x == "Level"    ) { return lvl;    }
+
                   return "\nInvalid Input for SpellClass::printName";
             }
             friend bool operator< (SpellClass &left,SpellClass &right)
@@ -84,17 +76,17 @@ class SpellClassName
 
             SpellClassName();
             string name;
-            SpellClass* spellClassObject;
+            SpellClass* classObj;
 
       public:
 
             SpellClassName(string n, SpellClass* s)
             {
                   name = n;
-                  spellClassObject = s;
+                  classObj = s;
             }
             string getName()     { return name; }
-            SpellClass* getObj() { return spellClassObject; }
+            SpellClass* getObj() { return classObj; }
             SpellClassName* getThis() { return this; } 
             void print() { cout << name; }
 };
@@ -107,18 +99,18 @@ class SpellClassClass
 
             SpellClassClass();
             string sClass;
-            SpellClass* spellClassObject;
+            SpellClass* classObj;
 
       public:
 
             SpellClassClass(string c, SpellClass* s)
             {
                   sClass = c;
-                  spellClassObject = s;
+                  classObj = s;
             }
             SpellClassClass* getThis() { return this; }
             string getClass() { return sClass; }
-            SpellClass* getObj() { return spellClassObject; }
+            SpellClass* getObj() { return classObj; }
             void print() { cout << sClass; }
 };
 
@@ -130,18 +122,18 @@ class SpellClassLvl
 
             SpellClassLvl();
             string lvl;
-            SpellClass* spellClassObject;
+            SpellClass* classObj;
 
       public:
 
             SpellClassLvl(string l, SpellClass* s)
             {
                   lvl = l;
-                  spellClassObject = s;
+                  classObj = s;
             }
             SpellClassLvl* getThis() { return this; }
             string getLvl() { return lvl; }
-            SpellClass* getObj() { return spellClassObject; }
+            SpellClass* getObj() { return classObj; }
             void print() { cout << lvl; }
 };
 
@@ -193,17 +185,17 @@ class SpellTypeName
 
             SpellTypeName();
             string name;
-            SpellType* spellTypeObject;
+            SpellType* classObj;
 
       public:
 
             SpellTypeName(string n, SpellType* s)
             {
                   name = n;
-                  spellTypeObject = s;
+                  classObj = s;
             }
             string getName()    { return name; }
-            SpellType* getObj() { return spellTypeObject; }   
+            SpellType* getObj() { return classObj; }   
             void print() { cout << name; }
 };
 
@@ -215,17 +207,17 @@ class SpellTypeType
 
             SpellTypeType();
             string type;
-            SpellType* spellTypeObject;
+            SpellType* classObj;
 
       public:
 
             SpellTypeType(string t, SpellType* s)
             {
                   type = t;
-                  spellTypeObject = s;
+                  classObj = s;
             }
             string getType() { return type; }
-            SpellType* getObj() { return spellTypeObject; }
+            SpellType* getObj() { return classObj; }
             void print() { cout << type; }
 };
 
@@ -284,17 +276,17 @@ class PlayerName
 
             PlayerName();
             string name;
-            Player* playerObject;
+            Player* classObj;
 
       public:
 
             PlayerName(string s, Player* p)
             {
                   name = s;
-                  playerObject = p;
+                  classObj = p;
             }
             string getName() { return name; }
-            Player* getObj() { return playerObject; }
+            Player* getObj() { return classObj; }
             void print() { cout << name; }
 };
 
@@ -306,17 +298,17 @@ class PlayerClass
 
             PlayerClass();
             string pClass;
-            Player* playerObject;
+            Player* classObj;
 
       public:
 
             PlayerClass(string s, Player* p)
             {
                   pClass = s;
-                  playerObject = p;
+                  classObj = p;
             }
             string getClass() { return pClass; }
-            Player* getObj() { return playerObject; }
+            Player* getObj() { return classObj; }
             void print() { cout << pClass; }
 };
 
@@ -328,132 +320,26 @@ class PlayerLvl
 
             PlayerLvl();
             string lvl;
-            Player* playerObject;
+            Player* classObj;
 
       public:
 
             PlayerLvl(string s, Player* p)
             {
                   lvl = s;
-                  playerObject = p;
+                  classObj = p;
             }
             string getLvl() { return lvl; }
-            Player* getObj() { return playerObject; }
+            Player* getObj() { return classObj; }
             void print() { lvl; }
 };
 
-//-------------------------------------------------------
-/*
-template <class L, class R>
-void join(L firstTable, R secondTable)
-{
-      string match = "";
-      int k = 0;
-      
-      //search for matching column headers
-      for (int i = 0; i < firstTable.at(0).getAttr()->size(); ++i)
-      {
-            for (int j = 0; j < secondTable.at(0).getAttr()->size(); ++j)
-            {
-                  if (firstTable.at(0).getAttr()[i] == secondTable.at(0).getAttr()[j])
-                  {
-                        match = firstTable.at(0).getAttr()[i];
-                  }
-            }     
-      }
-      if (match != "")
-      {
-            //print whichever table is smaller
-            if (firstTable.size() > secondTable.size())
-            {
-                  for (int i = 0; i < secondTable.size(); ++i)
-                  {
-                        cout << endl;
-                        firstTable.at(i).printExcept(match);
-                        secondTable.at(i).print();
-                  }
-            }
-            else
-            {
-                  for (int i = 0; i < firstTable.size(); ++i)
-                  {
-                        cout << endl;
-                        firstTable.at(i).printExcept(match);
-                        secondTable.at(i).print();
-                  }
-            }
-      }
-      else { cout << "\nThese tables have no columns in common"; }
-}
-
-template <class a, class b, class c, class d, class e, class f>
-void altJoin( a firstTableName, 
-              b firstTableClass, 
-              c fristTableLvl, 
-              d secondTableName, 
-              e secondTableClass, 
-              f secondTableLvl)
-{
-      string match = "";
-      string firstTableHeader[3];
-      string secondTableHeader[3];
-
-      //for(auto iter : firstTable)
-
-      //search for matching column headers
-      for (int i = 0; i < firstTable.at(0).getAttr()->size(); ++i)
-      {
-            for (int j = 0; j < secondTable.at(0).getAttr()->size(); ++j)
-            {
-                  if (firstTable.at(0).getAttr()[i] == secondTable.at(0).getAttr()[j])
-                  {
-                        match = firstTable.at(0).getAttr()[i];
-                  }
-            }
-      }
-}
-
-template <class a, class b, class c, class d, class e>
-void altJoin(a firstTableName,
-             b firstTableClass,
-             c fristTableLvl,
-             d secondTableName,
-             e secondTableClass)
-{
-      string match = "";
-      string firstTableHeader[3];
-      string secondTableHeader[3];
-
-      //for(auto iter : firstTable)
-
-      //search for matching column headers
-      for (int i = 0; i < firstTable.at(0).getAttr()->size(); ++i)
-      {
-            for (int j = 0; j < secondTable.at(0).getAttr()->size(); ++j)
-            {
-                  if (firstTable.at(0).getAttr()[i] == secondTable.at(0).getAttr()[j])
-                  {
-                        match = firstTable.at(0).getAttr()[i];
-                  }
-            }
-      }
-}
-
-template <class a, class b, class c, class d>
-void altJoin(a firstTableName,
-             b fristTableType,
-             c secondTableName,
-             d secondTableType)
-{
-
-}
-*/
-
 //template for join
-template <class L, class R>
+template <typename L, typename R>
 void join12(L &firstTable, R &secondTable)
 {
       string overlap;
+      //search for overlapping columns (only search first object of first and second Table)
       for (auto iter : firstTable)
       {
             for (auto iter2 : secondTable)
@@ -494,7 +380,7 @@ void join12(L &firstTable, R &secondTable)
 }
 
 //template for projection
-template <class L, class S>
+template <typename L, typename S>
 void projection(L &table, S &column)
 {
       set<S> stringSet;
@@ -509,6 +395,222 @@ void projection(L &table, S &column)
       }
       return;
 }
+
+template <typename L, typename R, typename D, typename F>
+void select(L &table, R &nameIndex, D &classIndex, F &lvlIndex)
+{
+      int response;
+      vector<string> choices;
+      for (auto iter : table)
+      {     
+            cout << endl;
+            for (int i = 0; i < iter.getAttr().size(); ++i)
+            {
+                  cout << i + 1 << " - " << iter.getAttr()[i] << endl;
+                  choices.push_back(iter.getAttr()[i]);
+            }
+            break;
+      }
+      cout << "\nEnter what attribute to select for: "; cin >> response;
+      switch (response)
+      {
+
+            case 1:
+            {
+                  vector<string> values;
+                  string tmp;
+                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+                  cin >> tmp;
+                  while (tmp != "c")
+                  {
+                        values.push_back(tmp);
+                        cin >> tmp;
+                  }
+                  if (values.size() == 0)
+                  {
+                        for (auto iter : table)
+                        {
+                              iter.print();
+                        }
+                        return;
+                  }
+                  for (int i = 0; i < values.size(); ++i)
+                  {
+                        auto iter = nameIndex.find(values[i]);
+                        for (int j = 0; j < nameIndex.count(values[i]); ++j)
+                        {
+                              cout << endl;
+                              iter->second.getObj()->print();
+                              ++iter;
+                        }
+                  }
+                  break;
+            }
+            case 2:
+            {
+                  vector<string> values;
+                  string tmp;
+                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+                  cin >> tmp;
+                  while (tmp != "c")
+                  {
+                        values.push_back(tmp);
+                        cin >> tmp;
+                  }
+                  if (values.size() == 0)
+                  {
+                        for (auto iter : table)
+                        {
+                              iter.print();
+                        }
+                        return;
+                  }
+                  for (int i = 0; i < values.size(); ++i)
+                  {
+                        auto iter = classIndex.find(values[i]);
+                        for (int j = 0; j < classIndex.count(values[i]); ++j)
+                        {
+                              cout << endl;
+                              iter->second.getObj()->print();
+                              ++iter;
+                        }
+                  }
+                  break;
+            }
+            case 3:
+            {
+                  int choice2;
+                  string lvl;
+                  cout << "\n\t1 - >=";
+                  cout << "\n\t2 - <=";
+                  cout << "\n\t3 - ==";
+                  cout << "\nEnter operation: "; cin >> choice2;
+                  cout << "\nEnter Level: "; cin >> lvl;
+                  if (choice2 == 1)
+                  {
+                        for(auto iter: lvlIndex)
+                        {
+                              if (stoi(iter.first) >= stoi(lvl))
+                              {
+                                    cout << endl;
+                                    iter.second.getObj()->print();
+                              }
+                        }
+                        return;
+                  }
+                  else if (choice2 == 2)
+                  {
+                        for (auto iter : lvlIndex)
+                        {
+                              if (stoi(iter.first) <= stoi(lvl))
+                              {
+                                    cout << endl;
+                                    iter.second.getObj()->print();
+                              }
+                        }
+                        return;
+                  }
+                  else if (choice2 == 3)
+                  {
+                        for (auto iter : lvlIndex)
+                        {
+                              if (stoi(iter.first) == stoi(lvl))
+                              {
+                                    cout << endl;
+                                    iter.second.getObj()->print();
+                              }
+                        }
+                        return;
+                  }
+            }
+      }
+}
+
+template <typename L, typename R, typename D>
+void select(L &table, R &nameIndex, D &typeIndex)
+{
+      int response;
+      vector<string> choices;
+      for (auto iter : table)
+      {
+            cout << endl;
+            for (int i = 0; i < iter.getAttr().size(); ++i)
+            {
+                  cout << i + 1 << " - " << iter.getAttr()[i] << endl;
+                  choices.push_back(iter.getAttr()[i]);
+            }
+            break;
+      }
+      cout << "\nEnter what attribute to select for: "; cin >> response;
+      switch (response)
+      {
+
+            case 1:
+            {
+                  vector<string> values;
+                  string tmp;
+                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+                  cin >> tmp;
+                  while (tmp != "c")
+                  {
+                        values.push_back(tmp);
+                        cin >> tmp;
+                  }
+                  if (values.size() == 0)
+                  {
+                        for (auto iter : table)
+                        {
+                              iter.print();
+                        }
+                        return;
+                  }
+                  for (int i = 0; i < values.size(); ++i)
+                  {
+                        auto iter = nameIndex.find(values[i]);
+                        for (int j = 0; j < nameIndex.count(values[i]); ++j)
+                        {
+                              cout << endl;
+                              iter->second.getObj()->print();
+                              ++iter;
+                        }
+                  }
+                  break;
+            }
+            case 2:
+            {
+                  vector<string> values;
+                  string tmp;
+                  cout << "Enter specific values separated by a space (followed by a 'c' to continue)";
+                  cin >> tmp;
+                  while (tmp != "c")
+                  {
+                        values.push_back(tmp);
+                        cin >> tmp;
+                  }
+                  if (values.size() == 0)
+                  {
+                        for (auto iter : table)
+                        {
+                              iter.print();
+                        }
+                        return;
+                  }
+                  for (int i = 0; i < values.size(); ++i)
+                  {
+                        auto iter = typeIndex.find(values[i]);
+                        for (int j = 0; j < typeIndex.count(values[i]); ++j)
+                        {
+                              cout << endl;
+                              iter->second.getObj()->print();
+                              ++iter;
+                        }
+                  }
+                  break;
+            }
+      }
+}
+
+
 
 typedef vector<Player     >                              PlayerSet;
 typedef vector<SpellClass >                              SpellClassSet;
@@ -887,6 +989,10 @@ int main()
                                     }
                                     projection(spellClassList, choice3); break;
                               }
+                              case 3: if (jChoice == 1) select(spellTypeList, spellTypeNameIndex, spellTypeTypeIndex);
+                                      if (jChoice == 2) select(spellClassList, spellClassNameIndex, spellClassClassIndex, spellClassLvlIndex);
+                                      if (jChoice == 3) select(playerList, playerNameIndex, playerClassIndex, playerLvlIndex);
+                                      break;
                               default: break;
                               }
                         }
@@ -915,7 +1021,6 @@ int main()
             }*/
             cout << "\n\nAnother Search (y/n)?: "; cin >> userResponse;
       } while (userResponse == 'y');
-
 
       return 0;
       
